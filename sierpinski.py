@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import LightSource
 
 
 def get_eq_triangle_height(side: int):
@@ -14,35 +15,36 @@ def sierpinski(n):
     initial = generate_initial_triangle()
     one = np.array([initial, [initial[1], initial[1] + 1, get_eq_triangle_height(initial[1] - initial[0])], ])
     print(one)
-    # for i in range(n):
 
 
-def create_random_point_inside_triangle(triangle):
-    r1 = np.random.uniform(0, 1)
-    r2 = np.random.uniform(0, 1)
+def random_point_inside_triangle(triangle):
+    r1 = np.random.uniform(0, 2)
+    r2 = np.random.uniform(0, 2)
 
     return [np.sqrt(r1) * (1 - r2), r2 * np.sqrt(r1)]
 
 
 def chaos_game(n):
-    triangle = np.array([[0, 0], [1, 0], [0, 1]])
-
-    position = create_random_point_inside_triangle(triangle)
+    triangle = np.array([[0, 0], [1000, 0], [0, 1000]])
 
     points_x = []
     points_y = []
+    points = []
+
+    position = random_point_inside_triangle(triangle)
 
     for i in range(n):
-        position = np.absolute((triangle[np.random.randint(0, 3)] - position)) / 2
+        position = ((triangle[np.random.randint(0, 3)] - position)) / 2
         points_x.append(position[0])
         points_y.append(position[1])
+        # points.append(position)
 
+    # plt.figure(dpi=1200)
+    # plt.scatter(points_x, points_y, s=0.5)
+    plt.scatter(points_x, points_y, s=0.5)
 
-    plt.scatter(points_x, points_y)
+    plt.savefig('sample_1.png', dpi=1200)
     plt.show()
 
 
-
-
-
-chaos_game(100000)
+chaos_game(20000)
