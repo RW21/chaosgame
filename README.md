@@ -8,3 +8,5 @@ Created by Numpy and Matplotlib.
 ![](sample/sample_1.png)
 
 ![](sample/sample_2.png)
+
+![](sample/sample_3.png)
