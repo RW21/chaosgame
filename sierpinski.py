@@ -63,8 +63,9 @@ def chaos_game_square(iteration, factor, absolute=False):
         points_y.append(position[1])
 
     plt.scatter(points_x, points_y, s=0.5)
+    plt.savefig('sample_4.png', dpi=1000)
+
     plt.show()
-    plt.savefig('sample_4.png', dpi=700)
 
 
 
