@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import shapely as sp
+from matplotlib import cm
+from scipy.ndimage import gaussian_filter
 from shapely.geometry import Polygon, Point
 
 
@@ -79,7 +80,7 @@ def generate_random_point_in_polygon(polygon):
             return random_point
 
 
-class ChaosGame():
+class ChaosGame:
     def __init__(self, polygon):
         self.polygon = generate_polygon(polygon)
 
@@ -100,15 +101,23 @@ class ChaosGame():
             points_x.append(position[0])
             points_y.append(position[1])
 
-        plt.scatter(points_x, points_y, s=0.25)
-        # plt.savefig('sample_4.png', dpi=1000)
+
+        # plt.scatter(points_x, points_y, s=0.05)
+
+        img, extent = myplot(points_x, points_y, 8)
+        plt.imshow(img, extent=extent, origin='lower', cmap=cm.jet)
+        # plt.set_title("Smoothing with  $\sigma$ = %d" % s)
+        plt.savefig('sample_5.png', dpi=500)
 
         plt.show()
 
 
+        # plt.show()
+
+
 def generate_polygon(vertex):
     N = vertex
-    r = 1
+    r = 100000
     x = []
     y = []
 
@@ -119,6 +128,13 @@ def generate_polygon(vertex):
     return np.array([[x[i], y[i]] for i in range(len(x))])
 
 
-ChaosGame(8).chaos_game(100000, 0.5, absolute=False)
+def myplot(x, y, s, bins=1000):
+    heatmap, xedges, yedges = np.histogram2d(x, y, bins=bins)
+    heatmap = gaussian_filter(heatmap, sigma=s)
+
+    extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+    return heatmap.T, extent
+
+ChaosGame(10).chaos_game(10000000, -0.5, absolute=False)
 # chaos_game_triangle(20000, 0.5)
 # chaos_game_square(20000, 0.5, absolute=True)
