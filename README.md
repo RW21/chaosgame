@@ -5,6 +5,8 @@ Created by Numpy and Matplotlib.
 
 ## Sample
 
+![](sample/sample_5.png)
+
 ![](sample/sample_4.png)
 
 ![](sample/sample_1.png)
