@@ -90,9 +90,9 @@ class ChaosGame:
     def generate_heatmap(self, show=True, save=False):
 
         if len(self.x) == 0 or len(self.y) == 0:
-            raise
+            raise PointsNotGenerated('Points are not generated')
 
-        img, extent = myplot(self.x, self.y, 16)
+        img, extent = myplot(self.x, self.y, 3)
         plt.imshow(img, extent=extent, origin='lower', cmap=cm.jet)
 
         if save:
@@ -101,6 +101,17 @@ class ChaosGame:
         if show:
             plt.show()
 
+    def generate_scatter(self, show=True, save=False):
+        if len(self.x) == 0 or len(self.y) == 0:
+            raise PointsNotGenerated('Points are not generated.')
+
+        plt.scatter(self.x, self.y, s=0.05)
+
+        if save:
+            plt.savefig('sample_5.png', dpi=500)
+
+        if show:
+            plt.show()
 
     def chaos_game(self, iteration, factor, absolute=False):
         points_x = []
@@ -122,18 +133,12 @@ class ChaosGame:
         self.x = points_x
         self.y = points_y
 
-        # plt.scatter(points_x, points_y, s=0.05)
-
-
-        # plt.set_title("Smoothing with  $\sigma$ = %d" % s)
-
-
         # plt.show()
 
 
 def generate_polygon(vertex):
     N = vertex
-    r = 10000
+    r = 10000000
     x = []
     y = []
 
@@ -153,15 +158,13 @@ def myplot(x, y, s, bins=1000):
 
 
 a = ChaosGame(5)
-a.chaos_game(500000, 1/constants.golden, absolute=False)
+a.chaos_game(9000000, -1 / constants.golden, absolute=False)
 a.generate_heatmap()
 
 
-class ValidationError(Exception):
-    def __init__(self, message, errors):
+# a.generate_scatter()
 
-        # Call the base class constructor with the parameters it needs
+class PointsNotGenerated(Exception):
+    def __init__(self, message):
         super().__init__(message)
 
-        # Now for your custom code...
-        self.errors = errors
