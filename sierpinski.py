@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import shapely as sp
+from shapely.geometry import Polygon, Point
 
 
 def get_eq_triangle_height(side: int):
@@ -51,7 +53,6 @@ def chaos_game_square(iteration, factor, absolute=False):
 
     position = random_point_inside_square(square)
 
-
     for i in range(iteration):
         current_vertex = np.random.randint(0, 3)
         if absolute:
@@ -63,11 +64,61 @@ def chaos_game_square(iteration, factor, absolute=False):
         points_y.append(position[1])
 
     plt.scatter(points_x, points_y, s=0.5)
-    plt.savefig('sample_4.png', dpi=1000)
+    # plt.savefig('sample_4.png', dpi=1000)
 
     plt.show()
 
 
+def generate_random_point_in_polygon(polygon):
+    poly = Polygon(polygon)
+    min_x, min_y, max_x, max_y = poly.bounds
 
-# chaos_game_triangle(20000, 0.75, absolute=True)
-chaos_game_square(20000, 0.5, absolute=True)
+    while True:
+        random_point = Point([np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)])
+        if random_point.within(poly):
+            return random_point
+
+
+class ChaosGame():
+    def __init__(self, polygon):
+        self.polygon = generate_polygon(polygon)
+
+    def chaos_game(self, iteration, factor, absolute=False):
+        points_x = []
+        points_y = []
+
+        position = random_point_inside_square(self.polygon)
+
+        for i in range(iteration):
+            current_vertex = np.random.randint(0, len(self.polygon))
+
+            if absolute:
+                position = np.absolute(self.polygon[current_vertex] - position) * factor
+            else:
+                position = (self.polygon[current_vertex] - position) * factor
+
+            points_x.append(position[0])
+            points_y.append(position[1])
+
+        plt.scatter(points_x, points_y, s=0.25)
+        # plt.savefig('sample_4.png', dpi=1000)
+
+        plt.show()
+
+
+def generate_polygon(vertex):
+    N = vertex
+    r = 1
+    x = []
+    y = []
+
+    for n in range(0, vertex):
+        x.append(r * np.cos(2 * np.pi * n / N))
+        y.append(r * np.sin(2 * np.pi * n / N))
+
+    return np.array([[x[i], y[i]] for i in range(len(x))])
+
+
+ChaosGame(8).chaos_game(100000, 0.5, absolute=False)
+# chaos_game_triangle(20000, 0.5)
+# chaos_game_square(20000, 0.5, absolute=True)
