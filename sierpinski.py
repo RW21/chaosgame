@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from scipy.constants import constants
 from scipy.ndimage import gaussian_filter
 from shapely.geometry import Polygon, Point
 
@@ -83,6 +84,23 @@ def generate_random_point_in_polygon(polygon):
 class ChaosGame:
     def __init__(self, polygon):
         self.polygon = generate_polygon(polygon)
+        self.x = []
+        self.y = []
+
+    def generate_heatmap(self, show=True, save=False):
+
+        if len(self.x) == 0 or len(self.y) == 0:
+            raise
+
+        img, extent = myplot(self.x, self.y, 16)
+        plt.imshow(img, extent=extent, origin='lower', cmap=cm.jet)
+
+        if save:
+            plt.savefig('sample_5.png', dpi=500)
+
+        if show:
+            plt.show()
+
 
     def chaos_game(self, iteration, factor, absolute=False):
         points_x = []
@@ -101,15 +119,13 @@ class ChaosGame:
             points_x.append(position[0])
             points_y.append(position[1])
 
+        self.x = points_x
+        self.y = points_y
 
         # plt.scatter(points_x, points_y, s=0.05)
 
-        img, extent = myplot(points_x, points_y, 8)
-        plt.imshow(img, extent=extent, origin='lower', cmap=cm.jet)
-        # plt.set_title("Smoothing with  $\sigma$ = %d" % s)
-        plt.savefig('sample_5.png', dpi=500)
 
-        plt.show()
+        # plt.set_title("Smoothing with  $\sigma$ = %d" % s)
 
 
         # plt.show()
@@ -117,7 +133,7 @@ class ChaosGame:
 
 def generate_polygon(vertex):
     N = vertex
-    r = 100000
+    r = 10000
     x = []
     y = []
 
@@ -135,6 +151,17 @@ def myplot(x, y, s, bins=1000):
     extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
     return heatmap.T, extent
 
-ChaosGame(10).chaos_game(10000000, -0.5, absolute=False)
-# chaos_game_triangle(20000, 0.5)
-# chaos_game_square(20000, 0.5, absolute=True)
+
+a = ChaosGame(5)
+a.chaos_game(500000, 1/constants.golden, absolute=False)
+a.generate_heatmap()
+
+
+class ValidationError(Exception):
+    def __init__(self, message, errors):
+
+        # Call the base class constructor with the parameters it needs
+        super().__init__(message)
+
+        # Now for your custom code...
+        self.errors = errors
