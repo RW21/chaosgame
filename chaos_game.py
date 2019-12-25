@@ -81,19 +81,31 @@ def generate_random_point_in_polygon(polygon):
             return random_point
 
 
+class ChaosGame3d:
+    def __init__(self):
+        self.x, self.y, self.z = [], [], []
+
+
+class ChaosGameRegularPolyhedra(ChaosGame3d):
+    def __init__(self, faces):
+        super.__init__()
+        if faces not in {4, 8, 6, 20, 12}:
+            raise RegularPolyhedronNotPossible
+
+
 class ChaosGame:
     def __init__(self, polygon):
         self.polygon = generate_polygon(polygon)
         self.x = []
         self.y = []
 
-    def generate_heatmap(self, show=True, save=False):
+    def generate_heatmap(self, show=True, save=False, colormap: cm = cm.jet, sigma=2):
 
         if len(self.x) == 0 or len(self.y) == 0:
             raise PointsNotGenerated('Points are not generated')
 
-        img, extent = myplot(self.x, self.y, 3)
-        plt.imshow(img, extent=extent, origin='lower', cmap=cm.jet)
+        img, extent = myplot(self.x, self.y, 2)
+        plt.imshow(img, extent=extent, origin='lower', cmap=colormap)
 
         if save:
             plt.savefig('sample_5.png', dpi=500)
@@ -157,8 +169,8 @@ def myplot(x, y, s, bins=1000):
     return heatmap.T, extent
 
 
-a = ChaosGame(5)
-a.chaos_game(9000000, -1 / constants.golden, absolute=False)
+a = ChaosGame(7)
+a.chaos_game(1000000, -1 / 2, absolute=False)
 a.generate_heatmap()
 
 
@@ -168,3 +180,7 @@ class PointsNotGenerated(Exception):
     def __init__(self, message):
         super().__init__(message)
 
+
+class RegularPolyhedronNotPossible(Exception):
+    def __init__(self):
+        super().__init__('A regular polyhedron cannot be generated with the number of faces.')
