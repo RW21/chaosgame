@@ -88,20 +88,20 @@ class ChaosGame3d:
         self.x, self.y, self.z = [], [], []
 
 
-def generate_fixed_3d_coordinates(first, second, third):
+def generate_fixed_3d_coordinates(a, b, c):
     """
     All inputs are in format of (value, is_fixed).
-    :param first:
-    :param second:
-    :param third:
+    :param a:
+    :param b:
+    :param c:
     """
     count = 0
 
-    if first[1]:
+    if a[1]:
         count += 1
-    if second[1]:
+    if b[1]:
         count += 1
-    if third[1]:
+    if c[1]:
         count += 1
 
     num_combinations = 2 ** count
@@ -118,9 +118,9 @@ def generate_fixed_3d_coordinates(first, second, third):
 
         return coordinate
 
-    coordinates_x = generate(first)
-    coordinates_y = generate(second)
-    coordinates_z = generate(third)
+    coordinates_x = generate(a)
+    coordinates_y = generate(b)
+    coordinates_z = generate(c)
 
     return [(coordinates_x[i], coordinates_y[i], coordinates_z[i]) for i in range(len(coordinates_x))]
 
