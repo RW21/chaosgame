@@ -1,3 +1,5 @@
+import itertools
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -86,11 +88,66 @@ class ChaosGame3d:
         self.x, self.y, self.z = [], [], []
 
 
+def generate_fixed_3d_coordinates(first, second, third):
+    """
+    All inputs are in format of (value, is_fixed).
+    :param first:
+    :param second:
+    :param third:
+    """
+    count = 0
+
+    if first[1]:
+        count += 1
+    if second[1]:
+        count += 1
+    if third[1]:
+        count += 1
+
+    num_combinations = 2 ** count
+
+    def generate(parameter) -> list:
+        coordinate = []
+        multiplier = -1
+        for i in range(num_combinations):
+            if parameter[1]:
+                coordinate = [parameter[0]] * num_combinations
+            else:
+                multiplier *= -1
+                coordinate.append(multiplier * parameter[0])
+
+        return coordinate
+
+    coordinates_x = generate(first)
+    coordinates_y = generate(second)
+    coordinates_z = generate(third)
+
+    return [(coordinates_x[i], coordinates_y[i], coordinates_z[i]) for i in range(len(coordinates_x))]
+
+
 class ChaosGameRegularPolyhedra(ChaosGame3d):
     def __init__(self, faces):
-        super.__init__()
+        super().__init__()
         if faces not in {4, 8, 6, 20, 12}:
             raise RegularPolyhedronNotPossible
+        else:
+            self.faces = faces
+        self.vertexes = []
+
+    def generate_vertexes(self):
+        # https://en.wikipedia.org/wiki/Platonic_solid#Cartesian_coordinates
+
+        if self.faces == 4:
+            self.vertexes = [(1, 1, 1), (1, -1, -1), (-1, -1, -1), (-1, -1, 1)]
+
+        if self.faces == 8:
+            self.vertexes = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
+
+        if self.faces == 6:
+            self.vertexes = list(itertools.product([1, -1], repeat=3))
+
+        if self.faces == 12:
+            self.vertexes = list(itertools.product([1, -1], repeat=3)) + list(itertools.product())
 
 
 class ChaosGame:
@@ -169,9 +226,9 @@ def myplot(x, y, s, bins=1000):
     return heatmap.T, extent
 
 
-a = ChaosGame(7)
-a.chaos_game(1000000, -1 / 2, absolute=False)
-a.generate_heatmap()
+# a = ChaosGame(7)
+# a.chaos_game(1000000, -1 / 2, absolute=False)
+# a.generate_heatmap()
 
 
 # a.generate_scatter()
