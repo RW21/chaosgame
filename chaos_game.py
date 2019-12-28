@@ -3,6 +3,7 @@ import itertools
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
 from scipy.constants import constants
 from scipy.ndimage import gaussian_filter
 from shapely.geometry import Polygon, Point
@@ -133,6 +134,7 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
         else:
             self.faces = faces
         self.vertexes = []
+        self.generate_vertexes()
 
     def generate_vertexes(self):
         # https://en.wikipedia.org/wiki/Platonic_solid#Cartesian_coordinates
@@ -166,17 +168,31 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
         for i in range(len(self.vertexes)):
             self.vertexes[i] = np.array(self.vertexes[i])
 
-    def chaos_game(self, iteration, factor):
+    def chaos_game(self, iteration, factor, absolute=False):
         position = np.array([0, 0, 0])
 
         for i in range(iteration):
-            current_vertex = np.random.choice(self.vertexes)
-
-            position = (current_vertex - position) * factor
+            current_vertex = self.vertexes[np.random.randint(len(self.vertexes))]
+            if absolute:
+                position = np.absolute(current_vertex - position) * factor
+            else:
+                position = (current_vertex - position) * factor
 
             self.x.append(position[0])
             self.y.append(position[1])
             self.z.append(position[2])
+
+        # todo fix so np array from start
+        self.x = np.array(self.x)
+        self.y = np.array(self.y)
+        self.z = np.array(self.z)
+
+    def generate_3d_scatter(self):
+        fig = plt.figure()
+        ax = Axes3D(fig)
+        ax.scatter(self.x, self.y, self.z, s=0.5)
+
+        plt.show()
 
 
 class ChaosGame:
@@ -221,7 +237,7 @@ class ChaosGame:
             current_vertex = np.random.randint(0, len(self.polygon))
 
             if absolute:
-                position = np.absolute(self.polygon[current_vertex] - position) * factor
+                position = (self.polygon[current_vertex] - position) * factor
             else:
                 position = (self.polygon[current_vertex] - position) * factor
 
@@ -255,13 +271,6 @@ def myplot(x, y, s, bins=1000):
     return heatmap.T, extent
 
 
-a = ChaosGame(3)
-a.chaos_game(100000, -1 / constants.golden, absolute=False)
-a.generate_heatmap()
-
-
-# a.generate_scatter()
-
 class PointsNotGenerated(Exception):
     def __init__(self, message):
         super().__init__(message)
@@ -269,4 +278,6 @@ class PointsNotGenerated(Exception):
 
 class RegularPolyhedronNotPossible(Exception):
     def __init__(self):
-        super().__init__('A regular polyhedron cannot be generated with the number of faces.')
+        super().__init__(
+            '''A regular polyhedron cannot be generated with the number of faces.
+             A regular polyherdon can only have 4, 6, 8, 12, 20 faces.''')
