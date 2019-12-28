@@ -147,10 +147,10 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
                             + generate_fixed_3d_coordinates((0, True), (0, True), (1, True))
 
         if self.faces == 6:
-            self.vertexes = list(itertools.product([1, -1], repeat=3))
+            self.vertexes = tuple(itertools.product([1, -1], repeat=3))
 
         if self.faces == 12:
-            self.vertexes = list(itertools.product([1, -1], repeat=3)) \
+            self.vertexes = tuple(itertools.product([1, -1], repeat=3)) \
                             + generate_fixed_3d_coordinates((0, True), (1 / constants.golden, False),
                                                             (constants.golden, False)) \
                             + generate_fixed_3d_coordinates((1 / constants.golden, False), (constants.golden, False),
@@ -163,6 +163,20 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
                             + generate_fixed_3d_coordinates((1, False), (constants.golden, False), (0, True)) \
                             + generate_fixed_3d_coordinates((constants.golden, False), (0, True), (1, False))
 
+        for i in range(len(self.vertexes)):
+            self.vertexes[i] = np.array(self.vertexes[i])
+
+    def chaos_game(self, iteration, factor):
+        position = np.array([0, 0, 0])
+
+        for i in range(iteration):
+            current_vertex = np.random.choice(self.vertexes)
+
+            position = (current_vertex - position) * factor
+
+            self.x.append(position[0])
+            self.y.append(position[1])
+            self.z.append(position[2])
 
 
 class ChaosGame:
