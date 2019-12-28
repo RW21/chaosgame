@@ -139,7 +139,7 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
     def generate_vertexes(self):
         # https://en.wikipedia.org/wiki/Platonic_solid#Cartesian_coordinates
 
-        # not clean
+        # not clean todo use dict
         if self.faces == 4:
             self.vertexes = [(1, 1, 1), (1, -1, -1), (-1, -1, -1), (-1, -1, 1)]
 
@@ -164,9 +164,6 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
             self.vertexes = generate_fixed_3d_coordinates((0, True), (1, False), (constants.golden, False)) \
                             + generate_fixed_3d_coordinates((1, False), (constants.golden, False), (0, True)) \
                             + generate_fixed_3d_coordinates((constants.golden, False), (0, True), (1, False))
-
-        for i in range(len(self.vertexes)):
-            self.vertexes[i] = np.array(self.vertexes[i])
 
     def chaos_game(self, iteration, factor, absolute=False):
         position = np.array([0, 0, 0])
@@ -194,10 +191,24 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
 
         plt.show()
 
+    def generate_cross_section(self, exclude: str) -> (np.array, np.array):
+        """
+        Generates a cross section, excluding the axis (x,y,z) in the parameter.
+        :param exclude:
+        :return:
+        """
+        if exclude == 'x':
+            return self.y, self.z
 
-class ChaosGame:
-    def __init__(self, polygon):
-        self.polygon = generate_polygon(polygon)
+        if exclude == 'y':
+            return self.x, self.z
+
+        if exclude == 'z':
+            return self.x, self.y
+
+
+class ChaosGameBase:
+    def __init__(self):
         self.x = []
         self.y = []
 
@@ -227,6 +238,12 @@ class ChaosGame:
         if show:
             plt.show()
 
+
+class ChaosGame(ChaosGameBase):
+    def __init__(self, polygon):
+        super().__init__()
+        self.polygon = generate_polygon(polygon)
+
     def chaos_game(self, iteration, factor, absolute=False):
         points_x = []
         points_y = []
@@ -246,8 +263,6 @@ class ChaosGame:
 
         self.x = points_x
         self.y = points_y
-
-        # plt.show()
 
 
 def generate_polygon(vertex):
@@ -281,3 +296,8 @@ class RegularPolyhedronNotPossible(Exception):
         super().__init__(
             '''A regular polyhedron cannot be generated with the number of faces.
              A regular polyherdon can only have 4, 6, 8, 12, 20 faces.''')
+
+# demo_1 = ChaosGameRegularPolyhedra(8)
+#
+# demo_1.chaos_game(10000, -1/constants.golden)
+# demo_1.generate_3d_scatter()
