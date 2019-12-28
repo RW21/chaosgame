@@ -137,17 +137,32 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
     def generate_vertexes(self):
         # https://en.wikipedia.org/wiki/Platonic_solid#Cartesian_coordinates
 
+        # not clean
         if self.faces == 4:
             self.vertexes = [(1, 1, 1), (1, -1, -1), (-1, -1, -1), (-1, -1, 1)]
 
         if self.faces == 8:
-            self.vertexes = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
+            self.vertexes = generate_fixed_3d_coordinates((1, False), (0, True), (0, True)) \
+                            + generate_fixed_3d_coordinates((0, True), (1, False), (0, True)) \
+                            + generate_fixed_3d_coordinates((0, True), (0, True), (1, True))
 
         if self.faces == 6:
             self.vertexes = list(itertools.product([1, -1], repeat=3))
 
         if self.faces == 12:
-            self.vertexes = list(itertools.product([1, -1], repeat=3)) + list(itertools.product())
+            self.vertexes = list(itertools.product([1, -1], repeat=3)) \
+                            + generate_fixed_3d_coordinates((0, True), (1 / constants.golden, False),
+                                                            (constants.golden, False)) \
+                            + generate_fixed_3d_coordinates((1 / constants.golden, False), (constants.golden, False),
+                                                            (0, True)) \
+                            + generate_fixed_3d_coordinates((constants.golden, False),
+                                                            (0, True), (1 / constants.golden, False))
+
+        if self.faces == 20:
+            self.vertexes = generate_fixed_3d_coordinates((0, True), (1, False), (constants.golden, False)) \
+                            + generate_fixed_3d_coordinates((1, False), (constants.golden, False), (0, True)) \
+                            + generate_fixed_3d_coordinates((constants.golden, False), (0, True), (1, False))
+
 
 
 class ChaosGame:
@@ -226,9 +241,9 @@ def myplot(x, y, s, bins=1000):
     return heatmap.T, extent
 
 
-# a = ChaosGame(7)
-# a.chaos_game(1000000, -1 / 2, absolute=False)
-# a.generate_heatmap()
+a = ChaosGame(3)
+a.chaos_game(100000, -1 / constants.golden, absolute=False)
+a.generate_heatmap()
 
 
 # a.generate_scatter()
