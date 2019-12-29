@@ -107,12 +107,14 @@ class ChaosGame3d:
         self.y = np.array(self.y)
         self.z = np.array(self.z)
 
-    def generate_3d_scatter(self):
-        fig = plt.figure()
+    def generate_3d_scatter(self, fig, show=True, size=0.5):
         ax = Axes3D(fig)
         ax.scatter(self.x, self.y, self.z, s=0.5)
 
-        plt.show()
+        if show:
+            plt.show()
+
+        return fig
 
     def generate_cross_section(self, exclude: str) -> (np.array, np.array):
         """
@@ -207,9 +209,7 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
                             + generate_fixed_3d_coordinates((constants.golden, False), (0, True), (1, False))
 
 
-
-
-class ChaosGameBase:
+class ChaosGame2dBase:
     def __init__(self):
         self.x = []
         self.y = []
@@ -230,14 +230,14 @@ class ChaosGameBase:
 
         return plt
 
-    def generate_scatter(self, show=True, save=False) -> plt:
+    def generate_scatter(self, show=True, save=False, size=0.05) -> plt:
         if len(self.x) == 0 or len(self.y) == 0:
             raise PointsNotGenerated('Points are not generated.')
 
-        plt.scatter(self.x, self.y, s=0.05)
+        plt.scatter(self.x, self.y, s=size)
 
         if save:
-            plt.savefig('sample_5.png', dpi=500)
+            plt.savefig('out.png', dpi=500)
 
         if show:
             plt.show()
@@ -245,16 +245,13 @@ class ChaosGameBase:
         return plt
 
 
-class ChaosGame2d(ChaosGameBase):
+class ChaosGame2d(ChaosGame2dBase):
     def __init__(self, polygon):
         super().__init__()
         self.polygon = generate_polygon(polygon)
 
     def chaos_game(self, iteration, factor, absolute=False):
-        points_x = []
-        points_y = []
-
-        position = random_point_inside_square(self.polygon)
+        position = generate_random_point_in_polygon(self.polygon)
 
         for i in range(iteration):
             current_vertex = np.random.randint(0, len(self.polygon))
@@ -264,11 +261,14 @@ class ChaosGame2d(ChaosGameBase):
             else:
                 position = (self.polygon[current_vertex] - position) * factor
 
-            points_x.append(position[0])
-            points_y.append(position[1])
+            self.x.append(position[0])
+            self.y.append(position[1])
 
-        self.x = points_x
-        self.y = points_y
+    def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
+        position = generate_random_point_in_polygon(self.polygon)
+
+        # for i in range(iteration):
+
 
 
 def generate_polygon(vertex):
@@ -293,39 +293,50 @@ def myplot(x, y, s, bins=1000):
 
 
 def subplot_for_polyhedra_cross_section(cg: ChaosGameRegularPolyhedra):
+    fig = plt.figure()
+
+    size = 10
+    fig.set_figheight(size)
+    fig.set_figwidth(size)
+
+    plt.subplot(4, 1, 1)
+    cg.generate_3d_scatter(fig)
+
+    scatter_size = 0.5
+
     x, y = cg.generate_cross_section('x')
 
-    cg_base = ChaosGameBase()
+    cg_base = ChaosGame2dBase()
     cg_base.x = x
     cg_base.y = y
 
-    fig = plt.figure()
-
-    fig.set_figheight(15 * 3)
-    fig.set_figwidth(15)
-
-    plt.subplot(3, 1, 1)
-    cg_base.generate_scatter(show=False)
+    plt.subplot(4, 1, 2)
+    cg_base.generate_scatter(show=False, size=scatter_size)
 
     x, y = cg.generate_cross_section('y')
 
-    cg_base = ChaosGameBase()
+    cg_base = ChaosGame2dBase()
     cg_base.x = x
     cg_base.y = y
 
-    plt.subplot(3, 1, 2)
-    cg_base.generate_scatter(show=False)
+    plt.subplot(4, 1, 3)
+    cg_base.generate_scatter(show=False, size=scatter_size)
 
     x, y = cg.generate_cross_section('z')
 
-    cg_base = ChaosGameBase()
+    cg_base = ChaosGame2dBase()
     cg_base.x = x
     cg_base.y = y
 
-    plt.subplot(3, 1, 3)
-    cg_base.generate_scatter(show=False)
+    plt.subplot(4, 1, 4)
+    cg_base.generate_scatter(show=False, size=scatter_size)
 
     fig.show()
+
+
+class ChaosGameMultidimensionBase:
+    def __init__(self, dimension: int):
+        coordinates = [[] for i in range(dimension)]
 
 
 class PointsNotGenerated(Exception):
