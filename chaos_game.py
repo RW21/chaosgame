@@ -88,6 +88,47 @@ class ChaosGame3d:
     def __init__(self):
         self.x, self.y, self.z = [], [], []
 
+    def chaos_game(self, iteration, factor, absolute=False):
+        position = np.array([0, 0, 0])
+
+        for i in range(iteration):
+            current_vertex = self.vertexes[np.random.randint(len(self.vertexes))]
+            if absolute:
+                position = np.absolute(current_vertex - position) * factor
+            else:
+                position = (current_vertex - position) * factor
+
+            self.x.append(position[0])
+            self.y.append(position[1])
+            self.z.append(position[2])
+
+        # todo fix so np array from start
+        self.x = np.array(self.x)
+        self.y = np.array(self.y)
+        self.z = np.array(self.z)
+
+    def generate_3d_scatter(self):
+        fig = plt.figure()
+        ax = Axes3D(fig)
+        ax.scatter(self.x, self.y, self.z, s=0.5)
+
+        plt.show()
+
+    def generate_cross_section(self, exclude: str) -> (np.array, np.array):
+        """
+        Generates a cross section, excluding the axis (x,y,z) in the parameter.
+        :param exclude:
+        :return:
+        """
+        if exclude == 'x':
+            return self.y, self.z
+
+        if exclude == 'y':
+            return self.x, self.z
+
+        if exclude == 'z':
+            return self.x, self.y
+
 
 def generate_fixed_3d_coordinates(a, b, c):
     """
@@ -165,46 +206,7 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
                             + generate_fixed_3d_coordinates((1, False), (constants.golden, False), (0, True)) \
                             + generate_fixed_3d_coordinates((constants.golden, False), (0, True), (1, False))
 
-    def chaos_game(self, iteration, factor, absolute=False):
-        position = np.array([0, 0, 0])
 
-        for i in range(iteration):
-            current_vertex = self.vertexes[np.random.randint(len(self.vertexes))]
-            if absolute:
-                position = np.absolute(current_vertex - position) * factor
-            else:
-                position = (current_vertex - position) * factor
-
-            self.x.append(position[0])
-            self.y.append(position[1])
-            self.z.append(position[2])
-
-        # todo fix so np array from start
-        self.x = np.array(self.x)
-        self.y = np.array(self.y)
-        self.z = np.array(self.z)
-
-    def generate_3d_scatter(self):
-        fig = plt.figure()
-        ax = Axes3D(fig)
-        ax.scatter(self.x, self.y, self.z, s=0.5)
-
-        plt.show()
-
-    def generate_cross_section(self, exclude: str) -> (np.array, np.array):
-        """
-        Generates a cross section, excluding the axis (x,y,z) in the parameter.
-        :param exclude:
-        :return:
-        """
-        if exclude == 'x':
-            return self.y, self.z
-
-        if exclude == 'y':
-            return self.x, self.z
-
-        if exclude == 'z':
-            return self.x, self.y
 
 
 class ChaosGameBase:
@@ -212,7 +214,7 @@ class ChaosGameBase:
         self.x = []
         self.y = []
 
-    def generate_heatmap(self, show=True, save=False, colormap: cm = cm.jet, sigma=2):
+    def generate_heatmap(self, show=True, save=False, colormap: cm = cm.jet, sigma=2) -> plt:
 
         if len(self.x) == 0 or len(self.y) == 0:
             raise PointsNotGenerated('Points are not generated')
@@ -226,7 +228,9 @@ class ChaosGameBase:
         if show:
             plt.show()
 
-    def generate_scatter(self, show=True, save=False):
+        return plt
+
+    def generate_scatter(self, show=True, save=False) -> plt:
         if len(self.x) == 0 or len(self.y) == 0:
             raise PointsNotGenerated('Points are not generated.')
 
@@ -238,8 +242,10 @@ class ChaosGameBase:
         if show:
             plt.show()
 
+        return plt
 
-class ChaosGame(ChaosGameBase):
+
+class ChaosGame2d(ChaosGameBase):
     def __init__(self, polygon):
         super().__init__()
         self.polygon = generate_polygon(polygon)
@@ -284,6 +290,42 @@ def myplot(x, y, s, bins=1000):
 
     extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
     return heatmap.T, extent
+
+
+def subplot_for_polyhedra_cross_section(cg: ChaosGameRegularPolyhedra):
+    x, y = cg.generate_cross_section('x')
+
+    cg_base = ChaosGameBase()
+    cg_base.x = x
+    cg_base.y = y
+
+    fig = plt.figure()
+
+    fig.set_figheight(15 * 3)
+    fig.set_figwidth(15)
+
+    plt.subplot(3, 1, 1)
+    cg_base.generate_scatter(show=False)
+
+    x, y = cg.generate_cross_section('y')
+
+    cg_base = ChaosGameBase()
+    cg_base.x = x
+    cg_base.y = y
+
+    plt.subplot(3, 1, 2)
+    cg_base.generate_scatter(show=False)
+
+    x, y = cg.generate_cross_section('z')
+
+    cg_base = ChaosGameBase()
+    cg_base.x = x
+    cg_base.y = y
+
+    plt.subplot(3, 1, 3)
+    cg_base.generate_scatter(show=False)
+
+    fig.show()
 
 
 class PointsNotGenerated(Exception):
