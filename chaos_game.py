@@ -268,11 +268,14 @@ class ChaosGame2d(ChaosGame2dBase):
         position = generate_random_point_in_polygon(self.polygon)
 
         if restriction == 'currently chosen cannot be chosen':
-            previous = None
+            previous = np.zeros(2)
+            new = self.polygon[np.random.randint(len(self.polygon))]
 
             for i in range(iteration):
-                while (new := self.polygon[np.random.randint(len(self.polygon))]) != previous:
-                    previous = new
+                while (new == previous).all():
+                    new = self.polygon[np.random.randint(len(self.polygon))]
+
+                previous = new
 
                 if absolute:
                     position = np.absolute(new - position) * factor
@@ -281,9 +284,6 @@ class ChaosGame2d(ChaosGame2dBase):
 
                 self.x.append(position[0])
                 self.y.append(position[1])
-
-
-        for i in range(iteration):
 
 
 def generate_polygon(vertex):
