@@ -267,8 +267,23 @@ class ChaosGame2d(ChaosGame2dBase):
     def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
         position = generate_random_point_in_polygon(self.polygon)
 
-        # for i in range(iteration):
+        if restriction == 'currently chosen cannot be chosen':
+            previous = None
 
+            for i in range(iteration):
+                while (new := self.polygon[np.random.randint(len(self.polygon))]) != previous:
+                    previous = new
+
+                if absolute:
+                    position = np.absolute(new - position) * factor
+                else:
+                    position = (new - position) * factor
+
+                self.x.append(position[0])
+                self.y.append(position[1])
+
+
+        for i in range(iteration):
 
 
 def generate_polygon(vertex):
