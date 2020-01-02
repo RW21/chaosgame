@@ -9,6 +9,9 @@ from scipy.ndimage import gaussian_filter
 from shapely.geometry import Polygon, Point
 
 
+# todo refactor
+
+
 def get_eq_triangle_height(side: int):
     return (np.sqrt(3 * side ** 2)) / 2
 
@@ -288,11 +291,10 @@ class ChaosGame2d(ChaosGame2dBase):
                 self.y.append(position[1])
 
         elif restriction == 'vertex cannot be two places away':
-
             for i in range(iteration):
                 new_vertex = self.get_random_vertex()
 
-                while new_vertex in get_vertexes_apart_from(self.polygon, new_vertex)[2]:
+                while (get_vertexes_apart_from(self.polygon, new_vertex)[2][0] == new_vertex).all():
                     new_vertex = self.get_random_vertex()
 
                 current_vertex = new_vertex
@@ -305,6 +307,31 @@ class ChaosGame2d(ChaosGame2dBase):
                 self.x.append(position[0])
                 self.y.append(position[1])
 
+        elif restriction == 'current vertex cannot be chosen next':
+            current_vertex = self.get_random_vertex()
+
+            for i in range(iteration):
+                new_vertex = self.get_random_vertex()
+
+                while compare_arrays(new_vertex, current_vertex):
+                    new_vertex = self.get_random_vertex()
+
+                current_vertex = new_vertex
+
+                if absolute:
+                    position = np.absolute(current_vertex - position) * factor
+                else:
+                    position = (current_vertex - position) * factor
+
+                current_vertex = new_vertex
+
+                self.x.append(position[0])
+                self.y.append(position[1])
+
+
+def compare_arrays(np1: np.array, np2: np.array) -> bool:
+    return (np1 == np2).all()
+
 
 def get_vertexes_apart_from(vertexes: np.array, vertex) -> dict:
     distances = {}
@@ -313,7 +340,13 @@ def get_vertexes_apart_from(vertexes: np.array, vertex) -> dict:
     current_index = np.where(vertexes == vertex)[0][0]
 
     for i, vertex in enumerate(vertexes):
-        distances[np.absolute(current_index - i)] = vertex
+        distance = np.absolute(current_index - i)
+
+        # wanted to use a set :(
+        if distance not in distances:
+            distances[distance] = []
+
+        distances[distance].append(vertex)
 
     return distances
 
@@ -396,8 +429,3 @@ class RegularPolyhedronNotPossible(Exception):
         super().__init__(
             '''A regular polyhedron cannot be generated with the number of faces.
              A regular polyherdon can only have 4, 6, 8, 12, 20 faces.''')
-
-# demo_1 = ChaosGameRegularPolyhedra(8)
-#
-# demo_1.chaos_game(10000, -1/constants.golden)
-# demo_1.generate_3d_scatter()
