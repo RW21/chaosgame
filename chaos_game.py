@@ -264,13 +264,15 @@ class ChaosGame2d(ChaosGame2dBase):
             self.x.append(position[0])
             self.y.append(position[1])
 
+    def get_random_vertex(self):
+        return self.polygon[np.random.randint(len(self.polygon))]
+
     def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
         position = generate_random_point_in_polygon(self.polygon)
+        previous = np.zeros(2)
+        new = self.polygon[np.random.randint(len(self.polygon))]
 
         if restriction == 'currently chosen cannot be chosen':
-            previous = np.zeros(2)
-            new = self.polygon[np.random.randint(len(self.polygon))]
-
             for i in range(iteration):
                 while (new == previous).all():
                     new = self.polygon[np.random.randint(len(self.polygon))]
@@ -284,6 +286,36 @@ class ChaosGame2d(ChaosGame2dBase):
 
                 self.x.append(position[0])
                 self.y.append(position[1])
+
+        elif restriction == 'vertex cannot be two places away':
+
+            for i in range(iteration):
+                new_vertex = self.get_random_vertex()
+
+                while new_vertex in get_vertexes_apart_from(self.polygon, new_vertex)[2]:
+                    new_vertex = self.get_random_vertex()
+
+                current_vertex = new_vertex
+
+                if absolute:
+                    position = np.absolute(current_vertex - position) * factor
+                else:
+                    position = (current_vertex - position) * factor
+
+                self.x.append(position[0])
+                self.y.append(position[1])
+
+
+def get_vertexes_apart_from(vertexes: np.array, vertex) -> dict:
+    distances = {}
+
+    # assumes no duplicates in vertexes
+    current_index = np.where(vertexes == vertex)[0][0]
+
+    for i, vertex in enumerate(vertexes):
+        distances[np.absolute(current_index - i)] = vertex
+
+    return distances
 
 
 def generate_polygon(vertex):
