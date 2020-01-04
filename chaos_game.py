@@ -12,71 +12,6 @@ from shapely.geometry import Polygon, Point
 # todo refactor
 
 
-def get_eq_triangle_height(side: int):
-    return (np.sqrt(3 * side ** 2)) / 2
-
-
-def generate_initial_triangle():
-    return np.array([0, 1, np.sqrt(3) / 2])
-
-
-def random_point_inside_triangle(triangle):
-    r1 = np.random.uniform(0, 2)
-    r2 = np.random.uniform(0, 2)
-
-    return [np.sqrt(r1) * (1 - r2), r2 * np.sqrt(r1)]
-
-
-def chaos_game_triangle(iteration, factor, absolute=False):
-    triangle = np.array([[0, 0], [80, 0], [40, 20]])
-
-    points_x = []
-    points_y = []
-
-    position = random_point_inside_triangle(triangle)
-
-    for i in range(iteration):
-        if absolute:
-            position = np.absolute((triangle[np.random.randint(0, 3)] - position)) * factor
-        else:
-            position = ((triangle[np.random.randint(0, 3)] - position)) * factor
-
-        points_x.append(position[0])
-        points_y.append(position[1])
-
-    plt.scatter(points_x, points_y, s=0.5)
-
-    plt.show()
-
-
-def random_point_inside_square(square):
-    square_side = square[1][0] - square[0][0]
-    return [np.random.uniform(0, square_side), np.random.uniform(0, square_side)]
-
-
-def chaos_game_square(iteration, factor, absolute=False):
-    square = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
-    points_x = []
-    points_y = []
-
-    position = random_point_inside_square(square)
-
-    for i in range(iteration):
-        current_vertex = np.random.randint(0, 3)
-        if absolute:
-            position = np.absolute(square[current_vertex] - position) * factor
-        else:
-            position = (square[current_vertex] - position) * factor
-
-        points_x.append(position[0])
-        points_y.append(position[1])
-
-    plt.scatter(points_x, points_y, s=0.5)
-    # plt.savefig('sample_4.png', dpi=1000)
-
-    plt.show()
-
-
 def generate_random_point_in_polygon(polygon):
     poly = Polygon(polygon)
     min_x, min_y, max_x, max_y = poly.bounds
@@ -92,7 +27,9 @@ class ChaosGame3d:
         self.x, self.y, self.z = [], [], []
 
     def chaos_game(self, iteration, factor, absolute=False):
-        position = np.array([0, 0, 0])
+
+        # instead of choosing a random point in polyhedron, set initial point to be origin
+        position = np.zeros(3)
 
         for i in range(iteration):
             current_vertex = self.vertexes[np.random.randint(len(self.vertexes))]
@@ -105,14 +42,16 @@ class ChaosGame3d:
             self.y.append(position[1])
             self.z.append(position[2])
 
-        # todo fix so np array from start
-        self.x = np.array(self.x)
-        self.y = np.array(self.y)
-        self.z = np.array(self.z)
+    def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
+
+        # instead of choosing a random point in polyhedron, set initial point to be origin
+        position = np.zeros(3)
+
+        # if restriction == ''
 
     def generate_3d_scatter(self, fig, show=True, size=0.5):
         ax = Axes3D(fig)
-        ax.scatter(self.x, self.y, self.z, s=0.5)
+        ax.scatter(self.x, self.y, self.z, s=size)
 
         if show:
             plt.show()
@@ -254,6 +193,8 @@ class ChaosGame2d(ChaosGame2dBase):
         self.polygon = generate_polygon(polygon)
 
     def chaos_game(self, iteration, factor, absolute=False):
+        factor = -1 * factor
+
         position = generate_random_point_in_polygon(self.polygon)
 
         for i in range(iteration):
@@ -271,6 +212,7 @@ class ChaosGame2d(ChaosGame2dBase):
         return self.polygon[np.random.randint(len(self.polygon))]
 
     def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
+        factor = -1 * factor
         position = generate_random_point_in_polygon(self.polygon)
         previous = np.zeros(2)
         new = self.polygon[np.random.randint(len(self.polygon))]
@@ -422,6 +364,15 @@ class ChaosGameMultidimensionBase:
 class PointsNotGenerated(Exception):
     def __init__(self, message):
         super().__init__(message)
+
+
+class IteartionNotEnough(Exception):
+    def __init__(self):
+        super().__init__(
+            '''
+            At least 10000 iterations are required to produce
+            '''
+        )
 
 
 class RegularPolyhedronNotPossible(Exception):
