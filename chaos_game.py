@@ -13,6 +13,15 @@ from shapely.geometry import Polygon, Point
 
 
 def generate_random_point_in_polygon(polygon):
+    """Generates a randomly uniform point inside a polygon.
+
+    Args:
+        polygon (np.array): Numpy array with all vertexes.
+
+    Returns:
+        A shapely point inside the polygon.
+
+    """
     poly = Polygon(polygon)
     min_x, min_y, max_x, max_y = poly.bounds
 
@@ -23,33 +32,27 @@ def generate_random_point_in_polygon(polygon):
 
 
 class ChaosGame3d:
+    """Chaos game in 3d
+
+    Attributes:
+        x, y, z: Numpy arrays of all the coordinates.
+
+    """
+
     def __init__(self):
         self.x, self.y, self.z = [], [], []
 
-    def chaos_game(self, iteration, factor, absolute=False):
-
-        # instead of choosing a random point in polyhedron, set initial point to be origin
-        position = np.zeros(3)
-
-        for i in range(iteration):
-            current_vertex = self.vertexes[np.random.randint(len(self.vertexes))]
-            if absolute:
-                position = np.absolute(current_vertex - position) * factor
-            else:
-                position = (current_vertex - position) * factor
-
-            self.x.append(position[0])
-            self.y.append(position[1])
-            self.z.append(position[2])
-
-    def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
-
-        # instead of choosing a random point in polyhedron, set initial point to be origin
-        position = np.zeros(3)
-
-        # if restriction == ''
-
     def generate_3d_scatter(self, fig, show=True, size=0.5):
+        """Generates a 3d scatter plot from coordinates.
+
+        Args:
+            fig:
+            show:
+            size:
+
+        Returns:
+
+        """
         ax = Axes3D(fig)
         ax.scatter(self.x, self.y, self.z, s=size)
 
@@ -59,10 +62,13 @@ class ChaosGame3d:
         return fig
 
     def generate_cross_section(self, exclude: str) -> (np.array, np.array):
-        """
-        Generates a cross section, excluding the axis (x,y,z) in the parameter.
-        :param exclude:
-        :return:
+        """Generates a cross section, excluding the axis (x,y,z) in the parameter.
+
+        Args:
+            exclude (str): Which axis to exclude.
+
+        Returns:
+
         """
         if exclude == 'x':
             return self.y, self.z
@@ -75,11 +81,17 @@ class ChaosGame3d:
 
 
 def generate_fixed_3d_coordinates(a, b, c):
-    """
+    """Creates fixed 3d coordinates
+
     All inputs are in format of (value, is_fixed).
-    :param a:
-    :param b:
-    :param c:
+
+    Args:
+        a:
+        b:
+        c:
+
+    Returns (list): Coordinates.
+
     """
     count = 0
 
@@ -112,6 +124,13 @@ def generate_fixed_3d_coordinates(a, b, c):
 
 
 class ChaosGameRegularPolyhedra(ChaosGame3d):
+    """Chaos game in a regular polyhedra
+
+    Attributes:
+        faces: Number of faces of the polyhedra.
+        vertexes: Coordinates of the polyhedra.
+    """
+
     def __init__(self, faces):
         super().__init__()
         if faces not in {4, 8, 6, 20, 12}:
@@ -122,6 +141,9 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
         self.generate_vertexes()
 
     def generate_vertexes(self):
+        """Creates vertex arrays of the polyhedra.
+
+        """
         # https://en.wikipedia.org/wiki/Platonic_solid#Cartesian_coordinates
 
         # not clean todo use dict
@@ -150,6 +172,35 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
                             + generate_fixed_3d_coordinates((1, False), (constants.golden, False), (0, True)) \
                             + generate_fixed_3d_coordinates((constants.golden, False), (0, True), (1, False))
 
+    def chaos_game(self, iteration, factor, absolute=False):
+        """Generates chaos game coordinates.
+
+        Args:
+            iteration: Number of iterations.
+            factor:
+            absolute: If absolute should be used.
+        """
+        # instead of choosing a random point in polyhedron, set initial point to be origin
+        position = np.zeros(3)
+
+        for i in range(iteration):
+            current_vertex = self.vertexes[np.random.randint(len(self.vertexes))]
+            if absolute:
+                position = np.absolute(current_vertex - position) * factor
+            else:
+                position = (current_vertex - position) * factor
+
+            self.x.append(position[0])
+            self.y.append(position[1])
+            self.z.append(position[2])
+
+    def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
+
+        # instead of choosing a random point in polyhedron, set initial point to be origin
+        position = np.zeros(3)
+
+        # if restriction == ''
+
 
 class ChaosGame2dBase:
     def __init__(self):
@@ -157,7 +208,17 @@ class ChaosGame2dBase:
         self.y = []
 
     def generate_heatmap(self, show=True, save=False, colormap: cm = cm.jet, sigma=2) -> plt:
+        """Generates heatmap graph from the coordinates.
 
+        Args:
+            show: To show or not.
+            save: To save or not.
+            colormap: Type of Matplotlib colormap to use.
+            sigma: Sigma to use. Higher sigma creates an intense graph.
+
+        Returns: Generated plot.
+
+        """
         if len(self.x) == 0 or len(self.y) == 0:
             raise PointsNotGenerated('Points are not generated')
 
@@ -173,6 +234,16 @@ class ChaosGame2dBase:
         return plt
 
     def generate_scatter(self, show=True, save=False, size=0.05) -> plt:
+        """Generates a scatter plot from coordinates.
+
+        Args:
+            show: To show or not.
+            save: To save or not.
+            size: Size of each point.
+
+        Returns: Generated plot.
+
+        """
         if len(self.x) == 0 or len(self.y) == 0:
             raise PointsNotGenerated('Points are not generated.')
 
@@ -187,7 +258,14 @@ class ChaosGame2dBase:
         return plt
 
 
-class ChaosGame2d(ChaosGame2dBase):
+class ChaosGameRegularPolygon(ChaosGame2dBase):
+    """Chaos game with regular polygon base.
+
+    Attributes:
+        polygon: Number of vertexes.
+
+    """
+
     def __init__(self, polygon):
         super().__init__()
         self.polygon = generate_polygon(polygon)
@@ -209,15 +287,37 @@ class ChaosGame2d(ChaosGame2dBase):
             self.y.append(position[1])
 
     def get_random_vertex(self):
+        """Picks and returns a random vertex from the current vertexes.
+
+        Returns:
+
+        """
         return self.polygon[np.random.randint(len(self.polygon))]
 
     def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
+        """A restricted version of the 2d chaos game.
+
+        Restrictions:
+
+        Currently chosen cannot be chosen -> 0
+
+        Vertex cannot be two places away -> 1
+
+        Current vertex cannot be chosen next -> 2
+
+
+        Args:
+            iteration: Number of iterations.
+            factor: Multiplication factor.
+            restriction: Restriction number as listed above.
+            absolute: If absolute or not.
+        """
         factor = -1 * factor
         position = generate_random_point_in_polygon(self.polygon)
         previous = np.zeros(2)
         new = self.polygon[np.random.randint(len(self.polygon))]
 
-        if restriction == 'currently chosen cannot be chosen':
+        if restriction == 0:
             for i in range(iteration):
                 while (new == previous).all():
                     new = self.polygon[np.random.randint(len(self.polygon))]
@@ -232,7 +332,7 @@ class ChaosGame2d(ChaosGame2dBase):
                 self.x.append(position[0])
                 self.y.append(position[1])
 
-        elif restriction == 'vertex cannot be two places away':
+        elif restriction == 1:
             for i in range(iteration):
                 new_vertex = self.get_random_vertex()
 
@@ -249,7 +349,7 @@ class ChaosGame2d(ChaosGame2dBase):
                 self.x.append(position[0])
                 self.y.append(position[1])
 
-        elif restriction == 'current vertex cannot be chosen next':
+        elif restriction == 2:
             current_vertex = self.get_random_vertex()
 
             for i in range(iteration):
