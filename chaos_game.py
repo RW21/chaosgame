@@ -207,7 +207,7 @@ class ChaosGame2dBase:
         self.x = []
         self.y = []
 
-    def generate_heatmap(self, show=True, save=False, colormap: cm = cm.jet, sigma=2) -> plt:
+    def generate_heatmap(self, show=True, save='', colormap: cm = cm.jet, sigma=2) -> plt:
         """Generates heatmap graph from the coordinates.
 
         Args:
@@ -226,14 +226,14 @@ class ChaosGame2dBase:
         plt.imshow(img, extent=extent, origin='lower', cmap=colormap)
 
         if save:
-            plt.savefig('sample_5.png', dpi=500)
+            plt.savefig(save, dpi=500)
 
         if show:
             plt.show()
 
         return plt
 
-    def generate_scatter(self, show=True, save=False, size=0.05) -> plt:
+    def generate_scatter(self, show=True, save='', size=0.05) -> plt:
         """Generates a scatter plot from coordinates.
 
         Args:
@@ -250,7 +250,7 @@ class ChaosGame2dBase:
         plt.scatter(self.x, self.y, s=size)
 
         if save:
-            plt.savefig('out.png', dpi=500)
+            plt.savefig(save, dpi=500)
 
         if show:
             plt.show()
