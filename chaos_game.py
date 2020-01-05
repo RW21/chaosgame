@@ -203,9 +203,21 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
 
 
 class ChaosGame2dBase:
+    """
+
+    Attributes:
+        x: x coordinates.
+        y: y coordinates.
+        vectors: Vertexes of outline of the polygon.
+        polygon: Points of vertexes of the polygon.
+    """
+
     def __init__(self):
         self.x = []
         self.y = []
+
+        self.vectors = []
+        self.polygon = None
 
     def generate_heatmap(self, show=True, save='', colormap: cm = cm.jet, sigma=2) -> plt:
         """Generates heatmap graph from the coordinates.
@@ -223,6 +235,7 @@ class ChaosGame2dBase:
             raise PointsNotGenerated('Points are not generated')
 
         img, extent = myplot(self.x, self.y, 2)
+        plt.axis('off')
         plt.imshow(img, extent=extent, origin='lower', cmap=colormap)
 
         if save:
@@ -248,6 +261,7 @@ class ChaosGame2dBase:
             raise PointsNotGenerated('Points are not generated.')
 
         plt.scatter(self.x, self.y, s=size)
+        plt.axis('off')
 
         if save:
             plt.savefig(save, dpi=500)
@@ -256,6 +270,14 @@ class ChaosGame2dBase:
             plt.show()
 
         return plt
+
+    def generate_polygon_outline(self):
+        """Generates vertexes of the polygon.
+
+        """
+
+        for i in range(len(self.polygon)):
+            self.vectors.append(self.polygon[i] - self.polygon[i - 1])
 
 
 class ChaosGameRegularPolygon(ChaosGame2dBase):
@@ -268,10 +290,12 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
     def __init__(self, polygon):
         super().__init__()
-        self.polygon = generate_polygon(polygon)
+
+        if self.polygon is None:
+            self.polygon = generate_polygon(polygon)
 
     def chaos_game(self, iteration, factor, absolute=False):
-        factor = -1 * factor
+        factor *= -1
 
         position = generate_random_point_in_polygon(self.polygon)
 
@@ -312,7 +336,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
             restriction: Restriction number as listed above.
             absolute: If absolute or not.
         """
-        factor = -1 * factor
+        factor *= -1
         position = generate_random_point_in_polygon(self.polygon)
         previous = np.zeros(2)
         new = self.polygon[np.random.randint(len(self.polygon))]
