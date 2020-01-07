@@ -8,8 +8,14 @@ from scipy.constants import constants
 from scipy.ndimage import gaussian_filter
 from shapely.geometry import Polygon, Point
 
-
-# todo refactor
+"""
+Todo:
+    * Refactor
+    * Complete 3D and 2D generations.
+    * Generate documentation.
+    * Host documentation.
+    * Update README
+"""
 
 
 def generate_random_point_in_polygon(polygon):
