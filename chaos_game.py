@@ -31,6 +31,21 @@ def generate_random_point_in_polygon(polygon):
             return random_point
 
 
+def add_points(*args):
+    """Add points to the object.
+
+    Args:
+        *args: Coordinate list followed by the point to add.
+
+    Examples:
+        >>> add_points(self.x, self.y, [1,2])
+    """
+    add = args[-1]
+
+    for i, arg in enumerate(args[:-1]):
+        arg.append(add[i])
+
+
 class ChaosGame3d:
     """Chaos game in 3d
 
@@ -140,6 +155,14 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
         self.vertexes = []
         self.generate_vertexes()
 
+    def get_random_vertex(self):
+        """Get random vertex from current vertexes.
+
+        Returns: A random vertex.
+
+        """
+        return self.vertexes[np.random.randint(len(self.vertexes))]
+
     def generate_vertexes(self):
         """Creates vertex arrays of the polyhedra.
 
@@ -195,11 +218,42 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
             self.z.append(position[2])
 
     def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
+        """A restricted version of the 3d chaos game.
+
+        Restrictions:
+
+        Currently chosen cannot be chosen -> 0
+
+
+        Args:
+            iteration:
+            factor:
+            restriction:
+            absolute:
+        """
+        if self.x or self.y or self.z:
+            raise PointsAlreadyGenerated
 
         # instead of choosing a random point in polyhedron, set initial point to be origin
         position = np.zeros(3)
 
-        # if restriction == ''
+        vertex = self.get_random_vertex()
+        new_vertex = self.get_random_vertex()
+
+        if restriction == 1:
+
+            for i in range(iteration):
+                while vertex == new_vertex:
+                    new_vertex = self.get_random_vertex()
+
+                vertex = new_vertex
+
+                if absolute:
+                    position = np.absolute(vertex - position) * factor
+                else:
+                    position = (vertex - position) * factor
+
+                add_points(self.x, self.y, self.z, position)
 
 
 class ChaosGame2dBase:
@@ -216,8 +270,8 @@ class ChaosGame2dBase:
         self.x = []
         self.y = []
 
-        self.vectors = []
-        self.polygon = None
+        self.vectors: np.array = None
+        self.polygon: np.array = None
 
     def generate_heatmap(self, show=True, save='', colormap: cm = cm.jet, sigma=2) -> plt:
         """Generates heatmap graph from the coordinates.
@@ -274,10 +328,25 @@ class ChaosGame2dBase:
     def generate_polygon_outline(self):
         """Generates vertexes of the polygon.
 
+        A polygon needs to be generated first.
         """
 
+        if not self.polygon.size:
+            raise PointsNotGenerated
+
+        self.vectors = np.zeros(len(self.polygon))
+
         for i in range(len(self.polygon)):
-            self.vectors.append(self.polygon[i] - self.polygon[i - 1])
+            self.vectors[i] = (self.polygon[i] - self.polygon[i - 1])
+
+    def outline(self):
+        if not self.vectors:
+            self.generate_polygon_outline()
+
+        origin = [0], [0]  # origin point
+
+        plt.quiver(*origin, self.vectors[:, 0], self.vectors[:, 1], color=['r', 'b', 'g'], scale=21)
+        plt.show()
 
 
 class ChaosGameRegularPolygon(ChaosGame2dBase):
@@ -485,7 +554,20 @@ class ChaosGameMultidimensionBase:
         coordinates = [[] for i in range(dimension)]
 
 
-class PointsNotGenerated(Exception):
+class NotGenerated(Exception):
+    pass
+
+
+class PolygonNotGenerated(NotGenerated):
+    def __init__(self):
+        super().__init__(
+            '''
+            Polygon is not generated
+            '''
+        )
+
+
+class PointsNotGenerated(NotGenerated):
     def __init__(self, message):
         super().__init__(message)
 
@@ -494,7 +576,7 @@ class IteartionNotEnough(Exception):
     def __init__(self):
         super().__init__(
             '''
-            At least 10000 iterations are required to produce
+            At least 10000 iterations are required to produce a clear fractal.
             '''
         )
 
@@ -504,3 +586,10 @@ class RegularPolyhedronNotPossible(Exception):
         super().__init__(
             '''A regular polyhedron cannot be generated with the number of faces.
              A regular polyherdon can only have 4, 6, 8, 12, 20 faces.''')
+
+
+class PointsAlreadyGenerated(Exception):
+    def __init__(self):
+        super().__init__(
+            '''Points have already been generated.'''
+        )
