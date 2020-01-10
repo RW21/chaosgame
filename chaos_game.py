@@ -2,7 +2,7 @@ import itertools
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import cm
+from matplotlib import cm, pyplot
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.constants import constants
 from scipy.ndimage import gaussian_filter
@@ -12,9 +12,15 @@ from shapely.geometry import Polygon, Point
 Todo:
     * Refactor
     * Complete 3D and 2D generations.
+    * Implement animations.
     * Generate documentation.
     * Host documentation.
     * Update README
+"""
+
+"""
+Plans:
+    * Render in Blender.
 """
 
 
@@ -63,7 +69,7 @@ class ChaosGame3d:
     def __init__(self):
         self.x, self.y, self.z = [], [], []
 
-    def generate_3d_scatter(self, fig, show=True, size=0.5):
+    def generate_3d_scatter(self, fig=pyplot.figure(), show=True, size=0.5):
         """Generates a 3d scatter plot from coordinates.
 
         Args:
@@ -246,7 +252,7 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
         vertex = self.get_random_vertex()
         new_vertex = self.get_random_vertex()
 
-        if restriction == 1:
+        if restriction == 0:
 
             for i in range(iteration):
                 while vertex == new_vertex:
@@ -268,7 +274,7 @@ class ChaosGame2dBase:
     Attributes:
         x: x coordinates.
         y: y coordinates.
-        vectors: Vertexes of outline of the polygon.
+        vectors: Vectors of outline of the polygon.
         polygon: Points of vertexes of the polygon.
     """
 
@@ -278,6 +284,23 @@ class ChaosGame2dBase:
 
         self.vectors: np.array = None
         self.polygon: np.array = None
+
+    def add_virtual_vertex(self, option):
+        """Adds virtual vertexes to current polygon.
+
+        Adds virtual vertexes (eg. allow point in the middle the square to count as a vertex).
+
+        Options:
+
+        Add vertex in the center of the polygon -> 0
+
+        Args:
+            option: What type of vertex to add. Refer above.
+        """
+
+        if option == 0:
+            center_point = Polygon(self.polygon).centroid
+            np.append(self.polygon, center_point)
 
     def generate_heatmap(self, show=True, save='', colormap: cm = cm.jet, sigma=2) -> plt:
         """Generates heatmap graph from the coordinates.
@@ -494,6 +517,7 @@ def get_vertexes_apart_from(vertexes: np.array, vertex) -> dict:
 
 def generate_polygon(vertex):
     N = vertex
+    # todo fix this magic number
     r = 10000000
     x = []
     y = []
