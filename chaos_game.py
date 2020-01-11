@@ -269,7 +269,7 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
 
 
 class ChaosGame2dBase:
-    """
+    """Base class for all 2d chaos game.
 
     Attributes:
         x: x coordinates.
@@ -283,6 +283,8 @@ class ChaosGame2dBase:
         self.y = []
 
         self.vectors: np.array = None
+
+        self.vertex_num = 0
         self.polygon: list = None
 
     def add_virtual_vertex(self, option):
@@ -293,6 +295,7 @@ class ChaosGame2dBase:
         Options:
 
         Add vertex in the center of the polygon -> 0
+        Add vertexes in between all of the vertexes -> 1
 
         Args:
             option: What type of vertex to add. Refer above.
@@ -301,6 +304,12 @@ class ChaosGame2dBase:
         if option == 0:
             center_point = Polygon(self.polygon).centroid
             self.polygon.append(np.array([center_point.x, center_point.y]))
+
+        elif option == 1:
+
+            # doesn't consider the order of vertexes
+            for i in range(len(self.polygon)):
+                self.polygon.append(self.polygon[i] - self.polygon[i - 1])
 
     def generate_heatmap(self, show=True, save='', colormap: cm = cm.jet, sigma=2) -> plt:
         """Generates heatmap graph from the coordinates.
@@ -395,6 +404,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
         if self.polygon is None:
             self.polygon = generate_polygon(polygon)
+            self.vertex_num = polygon
 
     def chaos_game(self, iteration, factor, absolute=False):
         factor *= -1
@@ -402,12 +412,11 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
         position = generate_random_point_in_polygon(self.polygon)
 
         for i in range(iteration):
-            current_vertex = np.random.randint(0, len(self.polygon))
 
             if absolute:
-                position = (self.polygon[current_vertex] - position) * factor
+                position = (self.get_random_vertex() - position) * factor
             else:
-                position = (self.polygon[current_vertex] - position) * factor
+                position = (self.get_random_vertex() - position) * factor
 
             self.x.append(position[0])
             self.y.append(position[1])
