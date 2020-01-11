@@ -283,7 +283,7 @@ class ChaosGame2dBase:
         self.y = []
 
         self.vectors: np.array = None
-        self.polygon: np.array = None
+        self.polygon: list = None
 
     def add_virtual_vertex(self, option):
         """Adds virtual vertexes to current polygon.
@@ -300,7 +300,7 @@ class ChaosGame2dBase:
 
         if option == 0:
             center_point = Polygon(self.polygon).centroid
-            np.append(self.polygon, center_point)
+            self.polygon.append(np.array([center_point.x, center_point.y]))
 
     def generate_heatmap(self, show=True, save='', colormap: cm = cm.jet, sigma=2) -> plt:
         """Generates heatmap graph from the coordinates.
@@ -329,7 +329,7 @@ class ChaosGame2dBase:
 
         return plt
 
-    def generate_scatter(self, show=True, save='', size=0.05) -> plt:
+    def generate_scatter(self, show=True, save='', size=0.05, show_vertexes=False) -> plt:
         """Generates a scatter plot from coordinates.
 
         Args:
@@ -344,6 +344,10 @@ class ChaosGame2dBase:
             raise PointsNotGenerated('Points are not generated.')
 
         plt.scatter(self.x, self.y, s=size)
+
+        if show_vertexes:
+            plt.scatter(*zip(*self.polygon), s=size * 100, c='tomato')
+
         plt.axis('off')
 
         if save:
@@ -526,7 +530,8 @@ def generate_polygon(vertex):
         x.append(r * np.cos(2 * np.pi * n / N))
         y.append(r * np.sin(2 * np.pi * n / N))
 
-    return np.array([[x[i], y[i]] for i in range(len(x))])
+    # return np.array([[x[i], y[i]] for i in range(len(x))])
+    return [np.array([x[i], y[i]]) for i in range(len(x))]
 
 
 def myplot(x, y, s, bins=1000):
