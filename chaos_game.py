@@ -24,23 +24,23 @@ Plans:
 """
 
 
-def generate_random_point_in_polygon(polygon):
-    """Generates a randomly uniform point inside a polygon.
+def generate_random_point_in_polygon(poly):
+    """Generates a randomly uniform point inside a vertex.
 
     Args:
         polygon (np.array): Numpy array with all vertexes.
 
     Returns:
-        A shapely point inside the polygon.
+        A shapely point inside the vertex.
 
     """
-    poly = Polygon(polygon)
+    # poly = Polygon(polygon)
     min_x, min_y, max_x, max_y = poly.bounds
 
     while True:
         random_point = Point([np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)])
         if random_point.within(poly):
-            return random_point
+            return np.array([random_point.x, random_point.y])
 
 
 def add_points(*args):
@@ -275,7 +275,9 @@ class ChaosGame2dBase:
         x: x coordinates.
         y: y coordinates.
         vectors: Vectors of outline of the polygon.
-        polygon: Points of vertexes of the polygon.
+        vertex: Points of vertexes of the polygon.
+        polygon: Polygon object of the polygon.
+        initial_point: Initial seed point of a chaos game.
     """
 
     def __init__(self):
@@ -285,16 +287,20 @@ class ChaosGame2dBase:
         self.vectors: np.array = None
 
         self.vertex_num = 0
-        self.polygon: list = None
+        self.vertex: list = None
+
+        self.polygon: Polygon = None
+
+        self.initial_point = None
 
     def add_virtual_vertex(self, option):
-        """Adds virtual vertexes to current polygon.
+        """Adds virtual vertexes to current vertex.
 
         Adds virtual vertexes (eg. allow point in the middle the square to count as a vertex).
 
         Options:
 
-        Add vertex in the center of the polygon -> 0
+        Add vertex in the center of the vertex -> 0
         Add vertexes in between all of the vertexes -> 1
 
         Args:
@@ -302,14 +308,14 @@ class ChaosGame2dBase:
         """
 
         if option == 0:
-            center_point = Polygon(self.polygon).centroid
-            self.polygon.append(np.array([center_point.x, center_point.y]))
+            center_point = Polygon(self.vertex).centroid
+            self.vertex.append(np.array([center_point.x, center_point.y]))
 
         elif option == 1:
 
             # doesn't consider the order of vertexes
-            for i in range(len(self.polygon)):
-                self.polygon.append(self.polygon[i] - self.polygon[i - 1])
+            for i in range(len(self.vertex)):
+                self.vertex.append(self.vertex[i] - self.vertex[i - 1])
 
     def generate_heatmap(self, show=True, save='', colormap: cm = cm.jet, sigma=2) -> plt:
         """Generates heatmap graph from the coordinates.
@@ -338,10 +344,12 @@ class ChaosGame2dBase:
 
         return plt
 
-    def generate_scatter(self, show=True, save='', size=0.05, show_vertexes=False) -> plt:
+    def generate_scatter(self, show=True, save='', size=0.05, show_vertexes=False, show_initial_point=False) -> plt:
         """Generates a scatter plot from coordinates.
 
         Args:
+            show_initial_point: IF the initial point (seed) is shown or not.
+            show_vertexes: If the vertexes is shown or not.
             show: To show or not.
             save: To save or not.
             size: Size of each point.
@@ -349,13 +357,20 @@ class ChaosGame2dBase:
         Returns: Generated plot.
 
         """
+
+        special_magnification_rate = 1000
+
         if len(self.x) == 0 or len(self.y) == 0:
             raise PointsNotGenerated('Points are not generated.')
 
         plt.scatter(self.x, self.y, s=size)
 
         if show_vertexes:
-            plt.scatter(*zip(*self.polygon), s=size * 100, c='tomato')
+            plt.scatter(*zip(*self.vertex), s=size * special_magnification_rate, c='tomato')
+
+        if show_initial_point:
+            plt.scatter(self.initial_point[0], self.initial_point[1], s=size * special_magnification_rate, c='g',
+                        marker='D')
 
         plt.axis('off')
 
@@ -368,18 +383,18 @@ class ChaosGame2dBase:
         return plt
 
     def generate_polygon_outline(self):
-        """Generates vertexes of the polygon.
+        """Generates vertexes of the vertex.
 
-        A polygon needs to be generated first.
+        A vertex needs to be generated first.
         """
 
-        if not self.polygon.size:
+        if not self.vertex.size:
             raise PointsNotGenerated
 
-        self.vectors = np.zeros(len(self.polygon))
+        self.vectors = np.zeros(len(self.vertex))
 
-        for i in range(len(self.polygon)):
-            self.vectors[i] = (self.polygon[i] - self.polygon[i - 1])
+        for i in range(len(self.vertex)):
+            self.vectors[i] = (self.vertex[i] - self.vertex[i - 1])
 
     def outline(self):
         if not self.vectors:
@@ -392,7 +407,7 @@ class ChaosGame2dBase:
 
 
 class ChaosGameRegularPolygon(ChaosGame2dBase):
-    """Chaos game with regular polygon base.
+    """Chaos game with regular vertex base.
 
     Attributes:
         polygon: Number of vertexes.
@@ -403,31 +418,46 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
         super().__init__()
 
         if self.polygon is None:
-            self.polygon = generate_polygon(polygon)
+            self.polygon, self.vertex = generate_polygon(polygon)
             self.vertex_num = polygon
 
     def chaos_game(self, iteration, factor, absolute=False):
+        """Performs chaos game.
+
+        Args:
+            iteration: Number of iterations.
+            factor: Multiplication factor.
+            absolute: If absolute or not.
+        """
+
+        if iteration < 1000:
+            raise IteartionNotEnough
+
         factor *= -1
 
         position = generate_random_point_in_polygon(self.polygon)
 
+        # set initial point
+        self.initial_point = position
+
         for i in range(iteration):
 
-            if absolute:
-                position = (self.get_random_vertex() - position) * factor
-            else:
-                position = (self.get_random_vertex() - position) * factor
+            if i > 1000:
+                if absolute:
+                    position = (self.get_random_vertex() - position) * factor
+                else:
+                    position = (position - self.get_random_vertex()) * factor
 
-            self.x.append(position[0])
-            self.y.append(position[1])
+                self.x.append(position[0])
+                self.y.append(position[1])
 
     def get_random_vertex(self):
         """Picks and returns a random vertex from the current vertexes.
 
-        Returns:
+        Returns: A random vertex.
 
         """
-        return self.polygon[np.random.randint(len(self.polygon))]
+        return self.vertex[np.random.randint(len(self.vertex))]
 
     def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
         """A restricted version of the 2d chaos game.
@@ -540,7 +570,8 @@ def generate_polygon(vertex):
         y.append(r * np.sin(2 * np.pi * n / N))
 
     # return np.array([[x[i], y[i]] for i in range(len(x))])
-    return [np.array([x[i], y[i]]) for i in range(len(x))]
+    coords = [np.array([x[i], y[i]]) for i in range(len(x))]
+    return Polygon(coords), coords
 
 
 def myplot(x, y, s, bins=1000):
