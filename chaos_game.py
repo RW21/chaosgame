@@ -25,13 +25,13 @@ Plans:
 
 
 def generate_random_point_in_polygon(poly):
-    """Generates a randomly uniform point inside a vertex.
+    """Generates a randomly uniform point inside a point_b.
 
     Args:
         polygon (np.array): Numpy array with all vertexes.
 
     Returns:
-        A shapely point inside the vertex.
+        A shapely point inside the point_b.
 
     """
     # poly = Polygon(polygon)
@@ -43,11 +43,11 @@ def generate_random_point_in_polygon(poly):
             return np.array([random_point.x, random_point.y])
 
 
-def get_new_point(point, vertex, factor) -> np.array:
+def get_new_point(point, point_b, factor) -> np.array:
     position = np.zeros(len(point))
 
     if len(point) == 2:
-        position = np.array([(vertex[0] + point[0]), (vertex[1] + point[1])])
+        position = np.array([(point_b[0] + point[0]), (point_b[1] + point[1])])
         position *= factor
 
     return position
@@ -219,15 +219,15 @@ class ChaosGameRegularPolyhedra(ChaosGame3d):
         self.generate_vertexes()
 
     def get_random_vertex(self):
-        """Get random vertex from current vertexes.
+        """Get random point_b from current vertexes.
 
-        Returns: A random vertex.
+        Returns: A random point_b.
 
         """
         return self.vertexes[np.random.randint(len(self.vertexes))]
 
     def generate_vertexes(self):
-        """Creates vertex arrays of the polyhedra.
+        """Creates point_b arrays of the polyhedra.
 
         """
         # https://en.wikipedia.org/wiki/Platonic_solid#Cartesian_coordinates
@@ -345,17 +345,17 @@ class ChaosGame2dBase:
         self.initial_point = None
 
     def add_virtual_vertex(self, option):
-        """Adds virtual vertexes to current vertex.
+        """Adds virtual vertexes to current point_b.
 
-        Adds virtual vertexes (eg. allow point in the middle the square to count as a vertex).
+        Adds virtual vertexes (eg. allow point in the middle the square to count as a point_b).
 
         Options:
 
-        Add vertex in the center of the vertex -> 0
+        Add point_b in the center of the point_b -> 0
         Add vertexes in between all of the vertexes -> 1
 
         Args:
-            option: What type of vertex to add. Refer above.
+            option: What type of point_b to add. Refer above.
         """
 
         if option == 0:
@@ -366,7 +366,7 @@ class ChaosGame2dBase:
 
             # doesn't consider the order of vertexes
             for i in range(len(self.vertex)):
-                self.vertex.append(self.vertex[i] - self.vertex[i - 1])
+                self.vertex.append(get_new_point(self.vertex[i], self.vertex[i - 1], 0.5))
 
     def generate_heatmap(self, show=True, save='', colormap: cm = cm.jet, sigma=2) -> plt:
         """Generates heatmap graph from the coordinates.
@@ -433,9 +433,9 @@ class ChaosGame2dBase:
         return plt
 
     def generate_polygon_outline(self):
-        """Generates vertexes of the vertex.
+        """Generates vertexes of the point_b.
 
-        A vertex needs to be generated first.
+        A point_b needs to be generated first.
         """
 
         if not self.vertex.size:
@@ -457,7 +457,7 @@ class ChaosGame2dBase:
 
 
 class ChaosGameRegularPolygon(ChaosGame2dBase):
-    """Chaos game with regular vertex base.
+    """Chaos game with regular point_b base.
 
     Attributes:
         polygon: Number of vertexes.
@@ -483,7 +483,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
         # if iteration < 1000:
         #     raise IteartionNotEnough
 
-        factor *= 1
+        factor *= -1
 
         position = generate_random_point_in_polygon(self.polygon)
 
@@ -496,7 +496,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
                 position = np.absolute(self.get_random_vertex() - position) * factor
             else:
                 random_vertex = self.get_random_vertex()
-                position = [(random_vertex[0] + position[0]) * factor, (random_vertex[1] + position[1]) * factor]
+                position = get_new_point(random_vertex, position, factor)
 
             # if not Point(position).within(self.polygon):
             #     print('not within')
@@ -504,9 +504,9 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
             self.y.append(position[1])
 
     def get_random_vertex(self):
-        """Picks and returns a random vertex from the current vertexes.
+        """Picks and returns a random point_b from the current vertexes.
 
-        Returns: A random vertex.
+        Returns: A random point_b.
 
         """
         return self.vertex[np.random.randint(len(self.vertex))]
@@ -520,7 +520,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
         Vertex cannot be two places away -> 1
 
-        Current vertex cannot be chosen next -> 2
+        Current point_b cannot be chosen next -> 2
 
 
         Args:
