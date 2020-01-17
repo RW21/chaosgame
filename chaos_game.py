@@ -43,6 +43,57 @@ def generate_random_point_in_polygon(poly):
             return np.array([random_point.x, random_point.y])
 
 
+def get_new_point(point, vertex, factor) -> np.array:
+    position = np.zeros(len(point))
+
+    if len(point) == 2:
+        position = np.array([(vertex[0] + point[0]), (vertex[1] + point[1])])
+        position *= factor
+
+    return position
+
+
+def generate_polygon(vertex):
+    N = vertex
+    # todo fix this magic number
+    r = 10
+    x = []
+    y = []
+
+    for n in range(0, vertex):
+        x.append(r * np.cos(2 * np.pi * n / N))
+        y.append(r * np.sin(2 * np.pi * n / N))
+
+    coords = [np.array([x[i], y[i]]) for i in range(len(x))]
+
+    # rotate
+    origin = coords[0]
+
+    for i in range(1, len(coords)):
+        coords[i] = rotate_around_point(origin, coords[i], -30)
+
+    return Polygon(coords), coords
+
+
+def rotate_around_point(origin, point, angle):
+    """Rotates a point around a point.
+
+    Refer to https://en.wikipedia.org/wiki/Rotation_matrix.
+
+    Args:
+        origin: Point which we want to rotate around.
+        point: Point which we want to rotate.
+    """
+    angle = np.deg2rad(angle)
+
+    ox, oy = origin
+    px, py = point[0], point[1]
+
+    qx = ox + np.cos(angle) * (px - ox) - np.sin(angle) * (py - oy)
+    qy = oy + np.sin(angle) * (px - ox) + np.cos(angle) * (py - oy)
+    return qx, qy
+
+
 def add_points(*args):
     """Add points to the object.
 
@@ -344,7 +395,8 @@ class ChaosGame2dBase:
 
         return plt
 
-    def generate_scatter(self, show=True, save='', size=0.05, show_vertexes=False, show_initial_point=False) -> plt:
+    def generate_scatter(self, show=True, save='', size=0.05, special_rate=1000, show_vertexes=False,
+                         show_initial_point=False) -> plt:
         """Generates a scatter plot from coordinates.
 
         Args:
@@ -358,18 +410,16 @@ class ChaosGame2dBase:
 
         """
 
-        special_magnification_rate = 1000
-
         if len(self.x) == 0 or len(self.y) == 0:
             raise PointsNotGenerated('Points are not generated.')
 
         plt.scatter(self.x, self.y, s=size)
 
         if show_vertexes:
-            plt.scatter(*zip(*self.vertex), s=size * special_magnification_rate, c='tomato')
+            plt.scatter(*zip(*self.vertex), s=size * special_rate, c='tomato')
 
         if show_initial_point:
-            plt.scatter(self.initial_point[0], self.initial_point[1], s=size * special_magnification_rate, c='g',
+            plt.scatter(self.initial_point[0], self.initial_point[1], s=size * special_rate, c='g',
                         marker='D')
 
         plt.axis('off')
@@ -430,10 +480,10 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
             absolute: If absolute or not.
         """
 
-        if iteration < 1000:
-            raise IteartionNotEnough
+        # if iteration < 1000:
+        #     raise IteartionNotEnough
 
-        factor *= -1
+        factor *= 1
 
         position = generate_random_point_in_polygon(self.polygon)
 
@@ -442,14 +492,16 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
         for i in range(iteration):
 
-            if i > 1000:
-                if absolute:
-                    position = (self.get_random_vertex() - position) * factor
-                else:
-                    position = (position - self.get_random_vertex()) * factor
+            if absolute:
+                position = np.absolute(self.get_random_vertex() - position) * factor
+            else:
+                random_vertex = self.get_random_vertex()
+                position = [(random_vertex[0] + position[0]) * factor, (random_vertex[1] + position[1]) * factor]
 
-                self.x.append(position[0])
-                self.y.append(position[1])
+            # if not Point(position).within(self.polygon):
+            #     print('not within')
+            self.x.append(position[0])
+            self.y.append(position[1])
 
     def get_random_vertex(self):
         """Picks and returns a random vertex from the current vertexes.
@@ -556,22 +608,6 @@ def get_vertexes_apart_from(vertexes: np.array, vertex) -> dict:
         distances[distance].append(vertex)
 
     return distances
-
-
-def generate_polygon(vertex):
-    N = vertex
-    # todo fix this magic number
-    r = 10000000
-    x = []
-    y = []
-
-    for n in range(0, vertex):
-        x.append(r * np.cos(2 * np.pi * n / N))
-        y.append(r * np.sin(2 * np.pi * n / N))
-
-    # return np.array([[x[i], y[i]] for i in range(len(x))])
-    coords = [np.array([x[i], y[i]]) for i in range(len(x))]
-    return Polygon(coords), coords
 
 
 def myplot(x, y, s, bins=1000):
