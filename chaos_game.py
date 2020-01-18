@@ -529,7 +529,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
         Vertex cannot be two places away -> 1
 
-        Current point_b cannot be chosen next -> 2
+        currently chosen vertex cannot neighbor the previously chosen vertex if the two previously chosen vertices are the same -> 2
 
 
         Args:
@@ -560,7 +560,6 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
         elif restriction == 1:
             vertex, index_of_vertex = self.get_random_vertex_and_index()
-            position = get_new_point(position, vertex, factor)
 
             for i in range(iteration):
                 new_vertex, index_of_new_vertex = self.get_random_vertex_and_index()
@@ -569,6 +568,8 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
                     new_vertex, index_of_new_vertex = self.get_random_vertex_and_index()
 
                 position = get_new_point(position, new_vertex, factor)
+
+                vertex, index_of_vertex = new_vertex, index_of_new_vertex
 
                 self.x.append(position[0])
                 self.y.append(position[1])
