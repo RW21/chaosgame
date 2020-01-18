@@ -511,6 +511,15 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
         """
         return self.vertex[np.random.randint(len(self.vertex))]
 
+    def get_random_vertex_and_index(self):
+        """"Picks and returns a random point_b and its index from the current vertexes.
+
+        Returns: A random point_b and its index.
+
+        """
+        index = np.random.randint(len(self.vertex))
+        return self.vertex[index], index
+
     def chaos_game_restricted(self, iteration, factor, restriction, absolute=False):
         """A restricted version of the 2d chaos game.
 
@@ -529,8 +538,8 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
             restriction: Restriction number as listed above.
             absolute: If absolute or not.
         """
-        factor *= -1
         position = generate_random_point_in_polygon(self.polygon)
+        self.initial_point = position
         previous = np.zeros(2)
         new = self.get_random_vertex()
 
@@ -547,13 +556,14 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
                 self.y.append(position[1])
 
         elif restriction == 1:
+            vertex, index_of_vertex = self.get_random_vertex_and_index()
+            position = get_new_point(position, vertex, factor)
+
             for i in range(iteration):
-                new_vertex = self.get_random_vertex()
+                new_vertex, index_of_new_vertex = self.get_random_vertex_and_index()
 
-                while (get_vertexes_apart_from(self.vertex, new_vertex)[2][0] == new_vertex).all():
-                    new_vertex = self.get_random_vertex()
-
-                current_vertex = new_vertex
+                while abs(index_of_vertex - index_of_new_vertex) == 2:
+                    new_vertex, index_of_new_vertex = self.get_random_vertex_and_index()
 
                 position = get_new_point(position, new_vertex, factor)
 
