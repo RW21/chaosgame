@@ -1,4 +1,5 @@
 import itertools
+from collections import defaultdict
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -531,16 +532,16 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
         factor *= -1
         position = generate_random_point_in_polygon(self.polygon)
         previous = np.zeros(2)
-        new = self.polygon[np.random.randint(len(self.polygon))]
+        new = self.get_random_vertex()
 
         if restriction == 0:
             for i in range(iteration):
                 while (new == previous).all():
-                    new = self.polygon[np.random.randint(len(self.polygon))]
+                    new = self.get_random_vertex()
 
                 previous = new
 
-                position = get_new_point(new, position, factor)
+                position = get_new_point(position, new, factor)
 
                 self.x.append(position[0])
                 self.y.append(position[1])
@@ -549,15 +550,12 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
             for i in range(iteration):
                 new_vertex = self.get_random_vertex()
 
-                while (get_vertexes_apart_from(self.polygon, new_vertex)[2][0] == new_vertex).all():
+                while (get_vertexes_apart_from(self.vertex, new_vertex)[2][0] == new_vertex).all():
                     new_vertex = self.get_random_vertex()
 
                 current_vertex = new_vertex
 
-                if absolute:
-                    position = np.absolute(current_vertex - position) * factor
-                else:
-                    position = (current_vertex - position) * factor
+                position = get_new_point(position, new_vertex, factor)
 
                 self.x.append(position[0])
                 self.y.append(position[1])
@@ -573,10 +571,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
                 current_vertex = new_vertex
 
-                if absolute:
-                    position = np.absolute(current_vertex - position) * factor
-                else:
-                    position = (current_vertex - position) * factor
+                position = get_new_point(position, new_vertex, factor)
 
                 current_vertex = new_vertex
 
@@ -589,17 +584,24 @@ def compare_arrays(np1: np.array, np2: np.array) -> bool:
 
 
 def get_vertexes_apart_from(vertexes: np.array, vertex) -> dict:
-    distances = {}
+    """Gets all vertexes distance apart from vertex.
+
+    Return a dict with distance apart from vertex as key and vertex as value.
+
+    Args:
+        vertexes: All of the vertexes.
+        vertex: Target vertex.
+
+    Returns:
+
+    """
+    distances = defaultdict(list)
 
     # assumes no duplicates in vertexes
-    current_index = np.where(vertexes == vertex)[0][0]
+    current_index = np.where(np.array(vertexes) == vertex)[0][0]
 
     for i, vertex in enumerate(vertexes):
         distance = np.absolute(current_index - i)
-
-        # wanted to use a set :(
-        if distance not in distances:
-            distances[distance] = []
 
         distances[distance].append(vertex)
 
