@@ -544,12 +544,15 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
         new = self.get_random_vertex()
 
         if restriction == 0:
+            previous, previous_index = self.get_random_vertex_and_index()
+
             for i in range(iteration):
-                while (new == previous).all():
-                    new = self.get_random_vertex()
+                new, new_index = self.get_random_vertex_and_index()
 
-                previous = new
+                while new_index == previous_index:
+                    new, new_index = self.get_random_vertex_and_index()
 
+                previous, previous_index = new, new_index
                 position = get_new_point(position, new, factor)
 
                 self.x.append(position[0])
