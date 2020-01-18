@@ -43,12 +43,13 @@ def generate_random_point_in_polygon(poly):
             return np.array([random_point.x, random_point.y])
 
 
-def get_new_point(point, point_b, factor) -> np.array:
-    position = np.zeros(len(point))
+def get_new_point(point, vertex, factor) -> np.array:
+    factor = 1 - factor
 
-    if len(point) == 2:
-        position = np.array([(point_b[0] + point[0]), (point_b[1] + point[1])])
-        position *= factor
+    point = np.array(point)
+    vertex = np.array(vertex)
+
+    position = point + (vertex - point) * factor
 
     return position
 
@@ -483,7 +484,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
         # if iteration < 1000:
         #     raise IteartionNotEnough
 
-        factor *= -1
+        factor *= 1
 
         position = generate_random_point_in_polygon(self.polygon)
 
@@ -491,15 +492,13 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
         self.initial_point = position
 
         for i in range(iteration):
+            random_vertex = self.get_random_vertex()
 
-            if absolute:
-                position = np.absolute(self.get_random_vertex() - position) * factor
-            else:
-                random_vertex = self.get_random_vertex()
-                position = get_new_point(random_vertex, position, factor)
+            position = get_new_point(random_vertex, position, factor)
 
             # if not Point(position).within(self.polygon):
             #     print('not within')
+
             self.x.append(position[0])
             self.y.append(position[1])
 
@@ -541,10 +540,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
                 previous = new
 
-                if absolute:
-                    position = np.absolute(new - position) * factor
-                else:
-                    position = (new - position) * factor
+                position = get_new_point(new, position, factor)
 
                 self.x.append(position[0])
                 self.y.append(position[1])
