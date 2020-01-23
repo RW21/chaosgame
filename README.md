@@ -19,4 +19,4 @@ cg.chaos_game(100000, 0.5)
 cg.generate_heatmap()
 ```
 
-
+![](sample/Sierpiński%20triangle.png)
