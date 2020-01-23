@@ -531,6 +531,7 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
         currently chosen vertex cannot neighbor the previously chosen vertex if the two previously chosen vertices are the same -> 2
 
+        Current vertex cannot be one place away (anti-clockwise) from the previously chosen vertex -> 3
 
         Args:
             iteration: Number of iterations.
@@ -540,8 +541,6 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
         """
         position = generate_random_point_in_polygon(self.polygon)
         self.initial_point = position
-        previous = np.zeros(2)
-        new = self.get_random_vertex()
 
         if restriction == 0:
             previous, previous_index = self.get_random_vertex_and_index()
@@ -591,6 +590,11 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
 
                 self.x.append(position[0])
                 self.y.append(position[1])
+
+        # Current vertex cannot be one place away (anti-clockwise) from the previously chosen vertex.
+        elif restriction == 3:
+            current_vertex, current_vertex_index = self.get_random_vertex_and_index()
+
 
 
 def compare_arrays(np1: np.array, np2: np.array) -> bool:

@@ -1,16 +1,22 @@
 # Fractals
 
-A collection of interesting and visually pleasing fractals and mathematical structures.
-Created by Numpy and Matplotlib.
+A chaos game generation library.
 
 ## Sample
 
-![](sample/sample_5.png)
+```python
+from chaos_game import *
+```
 
-![](sample/sample_4.png)
+### The famous Sierpiński triangle
 
-![](sample/sample_1.png)
+```python
+# create regular polygon object with 3 vertexes (triangle)
+cg = ChaosGameRegularPolygon(3)
+# start chaos game with 10000 iterations and factor 0.5
+cg.chaos_game(100000, 0.5)
+# generate heatmap
+cg.generate_heatmap()
+```
 
-![](sample/sample_2.png)
 
-![](sample/sample_3.png)
