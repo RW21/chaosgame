@@ -45,7 +45,7 @@ cg.chaos_game(10000, 2/3)
 cg.generate_heatmap()
 ```
 
-![](sample/Sierpinski_carpet.png)\
+![](sample/Sierpinski_carpet.png)
 
 ### Vicsek fractal
 
