@@ -354,6 +354,7 @@ class ChaosGame2dBase:
         Options:
 
         Add point_b in the center of the point_b -> 0
+
         Add vertexes in between all of the vertexes -> 1
 
         Args:

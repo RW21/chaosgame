@@ -1,8 +1,23 @@
 # Fractals
 
-A chaos game generation library.
+A chaos game generation library. Supports Jupyter Notebook.
 
-## Sample
+## Requirements
+
+- [GEOS](https://trac.osgeo.org/geos/)
+    - Available on MacOS, Windows, Linuxes
+- `requirements.txt`
+    - `pip install -r requirements.txt` on a virtual environment etc
+
+## Jupyter Notebook
+
+### View 3D chaos games (WIP)
+
+Interactive 3d chaos game in Jupyter Notebook by [ipyvolume](https://github.com/maartenbreddels/ipyvolume).
+
+![](sample/Jupyter_3d_demo.png)
+
+## 2D samples
 
 ```python
 from chaos_game import *
@@ -20,3 +35,14 @@ cg.generate_heatmap()
 ```
 
 ![](sample/Sierpiński%20triangle.png)
+
+### Sierpinski carpet
+
+```python
+cg = cg.ChaosGameRegularPolygon(4)
+cg.add_virtual_vertex(1)
+cg.chaos_game(10000, 2/3)
+cg.generate_heatmap()
+```
+
+![](sample/Sierpinski carpet.png)
