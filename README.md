@@ -39,10 +39,24 @@ cg.generate_heatmap()
 ### Sierpinski carpet
 
 ```python
-cg = cg.ChaosGameRegularPolygon(4)
+cg = ChaosGameRegularPolygon(4)
 cg.add_virtual_vertex(1)
 cg.chaos_game(10000, 2/3)
 cg.generate_heatmap()
 ```
 
 ![](sample/Sierpinski_carpet.png)\
+
+### Vicsek fractal
+
+You can even apply additional vertexes (points randomly picked during chaos game). In this case, a vertex is created in the center of the polygon.
+
+```python
+cg = ChaosGameRegularPolygon(4)
+# create an additional vertex
+cg.add_virtual_vertex(0)
+cg.chaos_game(100000, 2/3)
+cg.generate_heatmap()
+```
+
+![](sample/Vicsek_fractal.png)

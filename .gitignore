@@ -5,3 +5,7 @@
 chaos_game_demo.py
 /chaos_game_demo.py
 /chaos_game_demo.py
+/__pycache__
+.vscode
+chaos_game_demo
+.DS_Store
