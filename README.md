@@ -34,7 +34,7 @@ cg.chaos_game(100000, 0.5)
 cg.generate_heatmap()
 ```
 
-![](sample/Sierpiński_triangle.png)
+![](sample/Sierpinski_triangle.png)
 
 ### Sierpinski carpet
 
@@ -45,4 +45,4 @@ cg.chaos_game(10000, 2/3)
 cg.generate_heatmap()
 ```
 
-![](sample/Sierpinski_carpet.png)
+![](sample/Sierpinski_carpet.png)\
