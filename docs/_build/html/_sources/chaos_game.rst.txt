@@ -1,0 +1,3 @@
+This is a template for including classes
+========================================
+.. autoclass:: <ClassName>

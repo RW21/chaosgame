@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to chaosgame.py’s documentation! &#8212; chaosgame.py  documentation</title>
+    <link rel="stylesheet" href="_static/traditional.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">chaosgame.py  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-chaos_game">
+<span id="welcome-to-chaosgame-py-s-documentation"></span><h1>Welcome to chaosgame.py’s documentation!<a class="headerlink" href="#module-chaos_game" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="chaos_game.ChaosGame2dBase">
+<em class="property">class </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">ChaosGame2dBase</code><a class="reference internal" href="_modules/chaos_game.html#ChaosGame2dBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGame2dBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for all 2d chaos game.</p>
+<dl class="attribute">
+<dt id="chaos_game.ChaosGame2dBase.x">
+<code class="sig-name descname">x</code><a class="headerlink" href="#chaos_game.ChaosGame2dBase.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>x coordinates.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chaos_game.ChaosGame2dBase.y">
+<code class="sig-name descname">y</code><a class="headerlink" href="#chaos_game.ChaosGame2dBase.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>y coordinates.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chaos_game.ChaosGame2dBase.vectors">
+<code class="sig-name descname">vectors</code><a class="headerlink" href="#chaos_game.ChaosGame2dBase.vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vectors of outline of the polygon.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chaos_game.ChaosGame2dBase.vertex">
+<code class="sig-name descname">vertex</code><a class="headerlink" href="#chaos_game.ChaosGame2dBase.vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Points of vertexes of the polygon.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chaos_game.ChaosGame2dBase.polygon">
+<code class="sig-name descname">polygon</code><a class="headerlink" href="#chaos_game.ChaosGame2dBase.polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polygon object of the polygon.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chaos_game.ChaosGame2dBase.initial_point">
+<code class="sig-name descname">initial_point</code><a class="headerlink" href="#chaos_game.ChaosGame2dBase.initial_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial seed point of a chaos game.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGame2dBase.add_virtual_vertex">
+<code class="sig-name descname">add_virtual_vertex</code><span class="sig-paren">(</span><em class="sig-param">option</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGame2dBase.add_virtual_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGame2dBase.add_virtual_vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds virtual vertexes to current point_b.</p>
+<p>Adds virtual vertexes (eg. allow point in the middle the square to count as a point_b).</p>
+<p>Options:</p>
+<p>Add point_b in the center of the point_b -&gt; 0</p>
+<p>Add vertexes in between all of the vertexes -&gt; 1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>option</strong> – What type of point_b to add. Refer above.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGame2dBase.generate_heatmap">
+<code class="sig-name descname">generate_heatmap</code><span class="sig-paren">(</span><em class="sig-param">show=True</em>, <em class="sig-param">save=''</em>, <em class="sig-param">colormap: &lt;module 'matplotlib.cm' from '/Users/rinzewatanabe/Documents/fractals/venv/lib/python3.8/site-packages/matplotlib/cm.py'&gt; = &lt;matplotlib.colors.LinearSegmentedColormap object&gt;</em>, <em class="sig-param">sigma=2</em><span class="sig-paren">)</span> &#x2192; &lt;module 'matplotlib.pyplot' from '/Users/rinzewatanabe/Documents/fractals/venv/lib/python3.8/site-packages/matplotlib/pyplot.py'&gt;<a class="reference internal" href="_modules/chaos_game.html#ChaosGame2dBase.generate_heatmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGame2dBase.generate_heatmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates heatmap graph from the coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show</strong> – To show or not.</p></li>
+<li><p><strong>save</strong> – To save or not.</p></li>
+<li><p><strong>colormap</strong> – Type of Matplotlib colormap to use.</p></li>
+<li><p><strong>sigma</strong> – Sigma to use. Higher sigma creates an intense graph.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: Generated plot.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGame2dBase.generate_polygon_outline">
+<code class="sig-name descname">generate_polygon_outline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGame2dBase.generate_polygon_outline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGame2dBase.generate_polygon_outline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates vertexes of the point_b.</p>
+<p>A point_b needs to be generated first.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGame2dBase.generate_scatter">
+<code class="sig-name descname">generate_scatter</code><span class="sig-paren">(</span><em class="sig-param">show=True</em>, <em class="sig-param">save=''</em>, <em class="sig-param">size=0.05</em>, <em class="sig-param">special_rate=1000</em>, <em class="sig-param">show_vertexes=False</em>, <em class="sig-param">show_initial_point=False</em><span class="sig-paren">)</span> &#x2192; &lt;module 'matplotlib.pyplot' from '/Users/rinzewatanabe/Documents/fractals/venv/lib/python3.8/site-packages/matplotlib/pyplot.py'&gt;<a class="reference internal" href="_modules/chaos_game.html#ChaosGame2dBase.generate_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGame2dBase.generate_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a scatter plot from coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show_initial_point</strong> – IF the initial point (seed) is shown or not.</p></li>
+<li><p><strong>show_vertexes</strong> – If the vertexes is shown or not.</p></li>
+<li><p><strong>show</strong> – To show or not.</p></li>
+<li><p><strong>save</strong> – To save or not.</p></li>
+<li><p><strong>size</strong> – Size of each point.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: Generated plot.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chaos_game.ChaosGame3d">
+<em class="property">class </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">ChaosGame3d</code><a class="reference internal" href="_modules/chaos_game.html#ChaosGame3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGame3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chaos game in 3d</p>
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">x, y, z</code></dt>
+<dd><p>Numpy arrays of all the coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGame3d.generate_3d_scatter">
+<code class="sig-name descname">generate_3d_scatter</code><span class="sig-paren">(</span><em class="sig-param">fig=&lt;Figure size 640x480 with 0 Axes&gt;</em>, <em class="sig-param">show=True</em>, <em class="sig-param">size=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGame3d.generate_3d_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGame3d.generate_3d_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a 3d scatter plot from coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> – </p></li>
+<li><p><strong>show</strong> – </p></li>
+<li><p><strong>size</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGame3d.generate_cross_section">
+<code class="sig-name descname">generate_cross_section</code><span class="sig-paren">(</span><em class="sig-param">exclude: str) -&gt; (&lt;built-in function array&gt;</em>, <em class="sig-param">&lt;built-in function array&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGame3d.generate_cross_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGame3d.generate_cross_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a cross section, excluding the axis (x,y,z) in the parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exclude</strong> (<em>str</em>) – Which axis to exclude.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chaos_game.ChaosGameRegularPolygon">
+<em class="property">class </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">ChaosGameRegularPolygon</code><span class="sig-paren">(</span><em class="sig-param">polygon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chaos game with regular point_b base.</p>
+<dl class="attribute">
+<dt id="chaos_game.ChaosGameRegularPolygon.polygon">
+<code class="sig-name descname">polygon</code><a class="headerlink" href="#chaos_game.ChaosGameRegularPolygon.polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of vertexes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGameRegularPolygon.chaos_game">
+<code class="sig-name descname">chaos_game</code><span class="sig-paren">(</span><em class="sig-param">iteration</em>, <em class="sig-param">factor</em>, <em class="sig-param">absolute=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolygon.chaos_game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolygon.chaos_game" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs chaos game.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iteration</strong> – Number of iterations.</p></li>
+<li><p><strong>factor</strong> – Multiplication factor.</p></li>
+<li><p><strong>absolute</strong> – If absolute or not.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGameRegularPolygon.chaos_game_restricted">
+<code class="sig-name descname">chaos_game_restricted</code><span class="sig-paren">(</span><em class="sig-param">iteration</em>, <em class="sig-param">factor</em>, <em class="sig-param">restriction</em>, <em class="sig-param">absolute=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolygon.chaos_game_restricted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolygon.chaos_game_restricted" title="Permalink to this definition">¶</a></dt>
+<dd><p>A restricted version of the 2d chaos game.</p>
+<p>Restrictions:</p>
+<p>Currently chosen cannot be chosen -&gt; 0</p>
+<p>Vertex cannot be two places away -&gt; 1</p>
+<p>currently chosen vertex cannot neighbor the previously chosen vertex if the two previously chosen vertices are the same -&gt; 2</p>
+<p>Current vertex cannot be one place away (anti-clockwise) from the previously chosen vertex -&gt; 3</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iteration</strong> – Number of iterations.</p></li>
+<li><p><strong>factor</strong> – Multiplication factor.</p></li>
+<li><p><strong>restriction</strong> – Restriction number as listed above.</p></li>
+<li><p><strong>absolute</strong> – If absolute or not.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGameRegularPolygon.get_random_vertex">
+<code class="sig-name descname">get_random_vertex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolygon.get_random_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolygon.get_random_vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picks and returns a random point_b from the current vertexes.</p>
+<p>Returns: A random point_b.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGameRegularPolygon.get_random_vertex_and_index">
+<code class="sig-name descname">get_random_vertex_and_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolygon.get_random_vertex_and_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolygon.get_random_vertex_and_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Picks and returns a random point_b and its index from the current vertexes.</p>
+<p>Returns: A random point_b and its index.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chaos_game.ChaosGameRegularPolyhedra">
+<em class="property">class </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">ChaosGameRegularPolyhedra</code><span class="sig-paren">(</span><em class="sig-param">faces</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolyhedra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolyhedra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chaos game in a regular polyhedra</p>
+<dl class="attribute">
+<dt id="chaos_game.ChaosGameRegularPolyhedra.faces">
+<code class="sig-name descname">faces</code><a class="headerlink" href="#chaos_game.ChaosGameRegularPolyhedra.faces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of faces of the polyhedra.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chaos_game.ChaosGameRegularPolyhedra.vertexes">
+<code class="sig-name descname">vertexes</code><a class="headerlink" href="#chaos_game.ChaosGameRegularPolyhedra.vertexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of the polyhedra.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGameRegularPolyhedra.chaos_game">
+<code class="sig-name descname">chaos_game</code><span class="sig-paren">(</span><em class="sig-param">iteration</em>, <em class="sig-param">factor</em>, <em class="sig-param">absolute=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolyhedra.chaos_game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolyhedra.chaos_game" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates chaos game coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iteration</strong> – Number of iterations.</p></li>
+<li><p><strong>factor</strong> – </p></li>
+<li><p><strong>absolute</strong> – If absolute should be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGameRegularPolyhedra.chaos_game_restricted">
+<code class="sig-name descname">chaos_game_restricted</code><span class="sig-paren">(</span><em class="sig-param">iteration</em>, <em class="sig-param">factor</em>, <em class="sig-param">restriction</em>, <em class="sig-param">absolute=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolyhedra.chaos_game_restricted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolyhedra.chaos_game_restricted" title="Permalink to this definition">¶</a></dt>
+<dd><p>A restricted version of the 3d chaos game.</p>
+<p>Restrictions:</p>
+<p>Currently chosen cannot be chosen -&gt; 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iteration</strong> – </p></li>
+<li><p><strong>factor</strong> – </p></li>
+<li><p><strong>restriction</strong> – </p></li>
+<li><p><strong>absolute</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGameRegularPolyhedra.generate_vertexes">
+<code class="sig-name descname">generate_vertexes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolyhedra.generate_vertexes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolyhedra.generate_vertexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates point_b arrays of the polyhedra.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chaos_game.ChaosGameRegularPolyhedra.get_random_vertex">
+<code class="sig-name descname">get_random_vertex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#ChaosGameRegularPolyhedra.get_random_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.ChaosGameRegularPolyhedra.get_random_vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get random point_b from current vertexes.</p>
+<p>Returns: A random point_b.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="chaos_game.IteartionNotEnough">
+<em class="property">exception </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">IteartionNotEnough</code><a class="reference internal" href="_modules/chaos_game.html#IteartionNotEnough"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.IteartionNotEnough" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="chaos_game.NotGenerated">
+<em class="property">exception </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">NotGenerated</code><a class="reference internal" href="_modules/chaos_game.html#NotGenerated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.NotGenerated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="chaos_game.PointsAlreadyGenerated">
+<em class="property">exception </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">PointsAlreadyGenerated</code><a class="reference internal" href="_modules/chaos_game.html#PointsAlreadyGenerated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.PointsAlreadyGenerated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="chaos_game.PointsNotGenerated">
+<em class="property">exception </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">PointsNotGenerated</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#PointsNotGenerated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.PointsNotGenerated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="chaos_game.PolygonNotGenerated">
+<em class="property">exception </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">PolygonNotGenerated</code><a class="reference internal" href="_modules/chaos_game.html#PolygonNotGenerated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.PolygonNotGenerated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="chaos_game.RegularPolyhedronNotPossible">
+<em class="property">exception </em><code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">RegularPolyhedronNotPossible</code><a class="reference internal" href="_modules/chaos_game.html#RegularPolyhedronNotPossible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.RegularPolyhedronNotPossible" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="chaos_game.add_points">
+<code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">add_points</code><span class="sig-paren">(</span><em class="sig-param">*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#add_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.add_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add points to the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*args</strong> – Coordinate list followed by the point to add.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">add_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="chaos_game.generate_fixed_3d_coordinates">
+<code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">generate_fixed_3d_coordinates</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">b</em>, <em class="sig-param">c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#generate_fixed_3d_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.generate_fixed_3d_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates fixed 3d coordinates</p>
+<p>All inputs are in format of (value, is_fixed).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> – </p></li>
+<li><p><strong>b</strong> – </p></li>
+<li><p><strong>c</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns (list): Coordinates.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="chaos_game.generate_random_point_in_polygon">
+<code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">generate_random_point_in_polygon</code><span class="sig-paren">(</span><em class="sig-param">poly</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#generate_random_point_in_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.generate_random_point_in_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a randomly uniform point inside a point_b.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>polygon</strong> (<em>np.array</em>) – Numpy array with all vertexes.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A shapely point inside the point_b.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="chaos_game.get_vertexes_apart_from">
+<code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">get_vertexes_apart_from</code><span class="sig-paren">(</span><em class="sig-param">vertexes: numpy.array</em>, <em class="sig-param">vertex</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="_modules/chaos_game.html#get_vertexes_apart_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.get_vertexes_apart_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all vertexes distance apart from vertex.</p>
+<p>Return a dict with distance apart from vertex as key and vertex as value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertexes</strong> – All of the vertexes.</p></li>
+<li><p><strong>vertex</strong> – Target vertex.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="chaos_game.rotate_around_point">
+<code class="sig-prename descclassname">chaos_game.</code><code class="sig-name descname">rotate_around_point</code><span class="sig-paren">(</span><em class="sig-param">origin</em>, <em class="sig-param">point</em>, <em class="sig-param">angle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chaos_game.html#rotate_around_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chaos_game.rotate_around_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotates a point around a point.</p>
+<p>Refer to <a class="reference external" href="https://en.wikipedia.org/wiki/Rotation_matrix">https://en.wikipedia.org/wiki/Rotation_matrix</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>origin</strong> – Point which we want to rotate around.</p></li>
+<li><p><strong>point</strong> – Point which we want to rotate.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to chaosgame.py’s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">chaosgame.py  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Rinze Watanabe.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.
+    </div>
+  </body>
+</html>
