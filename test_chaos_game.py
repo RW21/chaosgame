@@ -1,5 +1,5 @@
 from unittest import TestCase
-from chaos_game import generate_fixed_3d_coordinates
+from chaosgame.chaos_game import generate_fixed_3d_coordinates
 
 
 class Test(TestCase):

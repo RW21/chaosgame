@@ -2,12 +2,17 @@
 
 A chaos game generation library. Supports Jupyter Notebook.
 
+## Features
+
+- Create 2D and 3D fractals with chaos game
+- Animate creation of chaos game fractals
+
+
 ## Requirements
 
 - [GEOS](https://trac.osgeo.org/geos/)
     - Available on MacOS, Windows, Linuxes
-- `requirements.txt`
-    - `pip install -r requirements.txt` on a virtual environment etc
+- `pip install chaosgame`
 
 ## Jupyter Notebook
 
@@ -20,7 +25,7 @@ Interactive 3d chaos game in Jupyter Notebook by [ipyvolume](https://github.com/
 ## 2D samples
 
 ```python
-from chaos_game import *
+from chaosgame.chaos_game import *
 ```
 
 ### The famous Sierpiński triangle
