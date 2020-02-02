@@ -3,6 +3,7 @@ from collections import defaultdict
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from matplotlib import cm, pyplot
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.constants import constants
@@ -23,6 +24,40 @@ Todo:
 Plans:
     * Render in Blender.
 """
+
+def verificate_config(config: dict):
+    # todo implement
+    return True
+
+class CubicBezierFunction:
+    def __init__(self, p0, p1, p2, p3):
+        self.__dict__.update({k: v for k, v in locals().items() if k != 'self'})
+        self.function = self.cubic_bezier_function_generator()
+
+    def cubic_bezier_function_generator(self):
+        """Generates a cubic beizer function with the parameters specified.
+
+        Args:
+            p0:
+            p1:
+            p2:
+            p3:
+
+        Returns: A cubic bezier function.
+
+        """
+
+        def bezier_function(t):
+            return (1 - t ** 3) * self.p0 + 3 * (1 - t ** 2) * t * self.p1 + 3 * (1 - t) * (
+                    t ** 2) * self.p2 + self.p3 * t ** 3
+
+        return bezier_function
+
+    def __str__(self):
+        return f"p0={self.p0} p1:{self.p1} p2:{self.p2} p3:{self.p3}"
+
+    def __repr__(self):
+        return self.__str__()
 
 
 def generate_random_point_in_polygon(poly):
@@ -597,7 +632,6 @@ class ChaosGameRegularPolygon(ChaosGame2dBase):
             current_vertex, current_vertex_index = self.get_random_vertex_and_index()
 
 
-
 def compare_arrays(np1: np.array, np2: np.array) -> bool:
     return (np1 == np2).all()
 
@@ -675,6 +709,32 @@ def subplot_for_polyhedra_cross_section(cg: ChaosGameRegularPolyhedra):
     cg_base.generate_scatter(show=False, size=scatter_size)
 
     fig.show()
+
+
+def animate(cg: ChaosGame2dBase, config: list, frame_count: int, easing_function=lambda x: x):
+    """Helper function to animate generation.
+
+    Args:
+        iteration: The number of iterations for chaos game.
+        frame_count: The number of frame counts to generate.
+        easing_function: A function of the easing function. Use it to specify the growth rate etc.
+    """
+    verificate_config(config)
+
+    iteration_at = [easing_function(i) for i in range(frame_count)]
+    anims = []
+
+    for i, frame in enumerate(range(frame_count)):
+        if config[0] == 'chaos_game':
+            cg.chaos_game(config[1], config[2]/frame_count)
+            anims.append(cg.generate_scatter(show=False))
+
+    fig = plt.figure()
+    ani = animation.ArtistAnimation(fig, anims, interval=100)
+    fig.show()
+    return ani
+
+
 
 
 class ChaosGameMultidimensionBase:
