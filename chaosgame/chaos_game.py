@@ -718,19 +718,20 @@ def subplot_for_polyhedra_cross_section(cg: ChaosGameRegularPolyhedra):
 def animate(factor, cg: ChaosGameRegularPolygon, save_as):
     """Helper function to animate generation for regular polygon type chaos game.
 
-    Args:
-        iteration: The number of iterations for chaos game.
     """
     camera = Camera(plt.figure())
 
-    for _ in tqdm(range(500)):
-        cg.chaos_game(100, 0.5)
+    for _ in tqdm(range(100)):
+        cg.chaos_game(50, factor)
         # cg.generate_scatter(show=False, show_vertexes=True, size=1)
         cg.generate_heatmap(show=False, sigma=1)
         camera.snap()
 
-    anim = camera.animate()
-    anim.save(save_as)
+    anim = camera.animate(interval=0.5)
+    if len(save_as) > 3 and save_as[-3:] == 'gif':
+        anim.save(save_as, writer='imagemagick')
+    else:
+        anim.save(save_as)
 
 
 class ChaosGameMultidimensionBase:

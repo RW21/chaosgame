@@ -2,6 +2,8 @@
 
 A chaos game generation library. Supports Jupyter Notebook.
 
+![](sample/animation_showcase.gif)
+
 ## Features
 
 - Create 2D and 3D fractals with chaos game
