@@ -4,11 +4,13 @@ from collections import defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from celluloid import Camera
 from matplotlib import cm, pyplot
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.constants import constants
 from scipy.ndimage import gaussian_filter
 from shapely.geometry import Polygon, Point
+from tqdm import tqdm
 
 """
 Todo:
@@ -25,9 +27,11 @@ Plans:
     * Render in Blender.
 """
 
+
 def verificate_config(config: dict):
     # todo implement
     return True
+
 
 class CubicBezierFunction:
     def __init__(self, p0, p1, p2, p3):
@@ -451,7 +455,7 @@ class ChaosGame2dBase:
         if len(self.x) == 0 or len(self.y) == 0:
             raise PointsNotGenerated('Points are not generated.')
 
-        plt.scatter(self.x, self.y, s=size)
+        plt.scatter(self.x, self.y, s=size, c='navy')
 
         if show_vertexes:
             plt.scatter(*zip(*self.vertex), s=size * special_rate, c='tomato')
@@ -711,30 +715,22 @@ def subplot_for_polyhedra_cross_section(cg: ChaosGameRegularPolyhedra):
     fig.show()
 
 
-def animate(cg: ChaosGame2dBase, config: list, frame_count: int, easing_function=lambda x: x):
-    """Helper function to animate generation.
+def animate(factor, cg: ChaosGameRegularPolygon, save_as):
+    """Helper function to animate generation for regular polygon type chaos game.
 
     Args:
         iteration: The number of iterations for chaos game.
-        frame_count: The number of frame counts to generate.
-        easing_function: A function of the easing function. Use it to specify the growth rate etc.
     """
-    verificate_config(config)
+    camera = Camera(plt.figure())
 
-    iteration_at = [easing_function(i) for i in range(frame_count)]
-    anims = []
+    for _ in tqdm(range(500)):
+        cg.chaos_game(100, 0.5)
+        # cg.generate_scatter(show=False, show_vertexes=True, size=1)
+        cg.generate_heatmap(show=False, sigma=1)
+        camera.snap()
 
-    for i, frame in enumerate(range(frame_count)):
-        if config[0] == 'chaos_game':
-            cg.chaos_game(config[1], config[2]/frame_count)
-            anims.append(cg.generate_scatter(show=False))
-
-    fig = plt.figure()
-    ani = animation.ArtistAnimation(fig, anims, interval=100)
-    fig.show()
-    return ani
-
-
+    anim = camera.animate()
+    anim.save(save_as)
 
 
 class ChaosGameMultidimensionBase:
