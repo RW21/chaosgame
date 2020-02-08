@@ -1,4 +1,4 @@
-# Fractals
+# Chaos Game
 
 A chaos game generation library. Supports Jupyter Notebook.
 
