@@ -9,12 +9,25 @@ A chaos game generation library. Supports Jupyter Notebook.
 - Create 2D and 3D fractals with chaos game
 - Animate creation of chaos game fractals
 
+## Install
 
-## Requirements
+### Requirements
 
 - [GEOS](https://trac.osgeo.org/geos/)
     - Available on MacOS, Windows, Linuxes
-- `pip install chaosgame`
+
+### Recommended method
+
+1. Clone the repository.
+2. Install from `requirements.txt` by `pip install -r requirements.txt`.
+
+### Alternative method
+
+```
+pip install chaosgame
+```
+
+pip might not be updated.
 
 ## Jupyter Notebook
 
