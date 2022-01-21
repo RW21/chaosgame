@@ -15,7 +15,7 @@ idna==2.8
 imagesize==1.2.0
 ipydatawidgets==4.0.1
 ipykernel==5.1.3
-ipython==7.11.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 ipyvolume==0.5.2
 ipywebrtc==0.5.0
